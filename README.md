@@ -2,114 +2,103 @@
 Nextcloud • Paperless-ngx • Traefik v3 • n8n • OnlyOffice • Zero-Knowledge Backups • SFTP-Scanner
 <div align="center"> <img src="https://img.shields.io/badge/Status-Stable-00e5ff?style=for-the-badge&logo=hackthebox&logoColor=00e5ff" /> <img src="https://img.shields.io/badge/Docker-Ready-0aff9d?style=for-the-badge&logo=docker&logoColor=0aff9d" /> <img src="https://img.shields.io/badge/Traefik-v3-00e5ff?style=for-the-badge&logo=traefikproxy&logoColor=00e5ff" /> <img src="https://img.shields.io/badge/N8N-Automation-0aff9d?style=for-the-badge&logo=n8n&logoColor=0aff9d" /> <img src="https://img.shields.io/badge/Backups-Encrypted-00e5ff?style=for-the-badge&logo=protonvpn&logoColor=00e5ff" /> </div>
 
-🧬 Überblick
+# 🌌 Universal Selfhosted Stack
+### Nextcloud • Paperless-ngx • Traefik v3 • n8n • OnlyOffice • Zero-Knowledge Backups • SFTP-Scanner
 
-Ein kompletter Dark-Mode Homelab-Stack, der sich in 1 Command selbst installiert:
-Reverse Proxy, SSL, Cloud, Dokumentenmanagement, Office, Workflows, OCR, PDF-Engine, Backups, Zero-Knowledge Encryption — alles automatisch.
+---
 
-Keine manuelle Konfiguration. Keine YAML-Hölle. Keine Passworteingaben.
+<div align="center">
+  <img src="https://img.shields.io/badge/Status-Stable-00e5ff?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Docker-Ready-0aff9d?style=for-the-badge&logo=docker&logoColor=0aff9d" />
+  <img src="https://img.shields.io/badge/Traefik-v3-00e5ff?style=for-the-badge&logo=traefikproxy&logoColor=00e5ff" />
+  <img src="https://img.shields.io/badge/Backups-Encrypted-0aff9d?style=for-the-badge&logo=protonvpn&logoColor=0aff9d" />
+</div>
 
-| Service              | Beschreibung                               |
-| -------------------- | ------------------------------------------ |
-| **Traefik v3**       | TLS, Routing, Dashboard (bcrypt geschützt) |
-| **Nextcloud 31**     | Private Cloud, Files, Kalender             |
-| **Paperless-ngx**    | Dokumentenmanagement + OCR                 |
-| **OnlyOffice**       | Online Office Suite                        |
-| **n8n**              | Automationen & Workflows                   |
-| **Redis**            | Cache für NC + Paperless                   |
-| **Tika / Gotenberg** | OCR + PDF Rendering                        |
-| **SFTP-Scanner**     | Scanner-Upload → Paperless „consume“       |
+---
 
-                     ┌───────────────────────────┐
-                     │      🔐 Traefik v3        │
-                     │  TLS • Routing • ACME     │
-                     └─────────────┬─────────────┘
-                                   │
-         ┌─────────────────────────┼─────────────────────────┐
-         │                         │                         │
-┌────────▼────────┐     ┌──────────▼──────────┐    ┌────────▼────────┐
-│   Nextcloud     │     │     Paperless       │    │      n8n         │
-│  + MariaDB      │     │+ Redis + Tika/Gotenb│    │ Workflows / API  │
-└────────┬────────┘     └──────────┬──────────┘    └────────┬────────┘
-         │                          │                       │
-         │                    ┌─────▼───────┐               │
-         │                    │  SFTP Upload │               │
-         │                    └──────────────┘               │
-         │                          │                       │
-         └──────────────────────────┴────────────────────────┘
+## 🧬 Überblick
+Ein kompletter Dark-Mode Homelab-Stack: Reverse Proxy, SSL, Cloud, Dokumentenmanagement, Office, Workflows, OCR, PDF-Engine, Backups, Zero-Knowledge Encryption – alles automatisch.  
+Ein Kommando. Kein manuelles Editing.
 
-                🔒 Backups (Zero-Knowledge, rclone crypt)
-              latest • archive/Δ • snapshots/YYYY-MM-DD
+---
 
+## 🔥 Features
+### Core Services
+- Traefik v3 (TLS, Routing, Dashboard, ACME)
+- Nextcloud 31
+- Paperless-ngx (mit Redis + Tika + Gotenberg)
+- OnlyOffice
+- n8n Automations
+- SFTP-Scanner Upload
+- Zero-Knowledge Backups (rclone crypt)
 
+---
+
+## ⚡ Installation
+```bash
 wget https://raw.githubusercontent.com/m0usm/UNIVERSAL-SELFHOSTED-STACK/main/setup.sh -O setup.sh
 chmod +x setup.sh
 sudo ./setup.sh
+```
 
-📝 Setup-Assistent (automatisch)
+---
 
-Das Script fragt:
+## 📝 Setup-Assistent
+Das Script fragt automatisch:
+- Domain-Einstellungen
+- TLS/Let’s Encrypt Mail
+- PostgreSQL für Paperless
+- Hetzner StorageBox Zugang
+- Synology Backup optional
+- Snapshot-Intervall
+- Traefik BasicAuth
 
-Basis-Installationspfad
+Alle Secrets werden generiert und gespeichert.
 
-Domains
+---
 
-Let’s Encrypt Mail
-
-PostgreSQL für Paperless
-
-StorageBox Zugang
-
-Optional: Synology Backup
-
-Snapshot-Intervalle
-
-Traefik BasicAuth
-
-Alles wird automatisch generiert → keine manuellen Änderungen.
-
-🔐 Generierte Zugangsdaten
-
-Am Ende zeigt das Script alle Logins übersichtlich in Cyan/Green:
-
-🔹 Traefik Dashboard (User + Passwort)
-🔹 Nextcloud Admin
-🔹 Paperless Admin
-🔹 n8n BasicAuth
-🔹 SFTP Scanner
-🔹 StorageBox Zugang
-🔹 Rclone Crypt Key
-🔹 DB-Passwörter
+## 🔐 Login & Zugangsdaten
+Nach Installation bekommst du automatisch:
+- Traefik Dashboard Login
+- Nextcloud Admin
+- Paperless Admin Login
+- n8n BasicAuth
+- SFTP Scanner Zugang
+- StorageBox Zugang
+- Rclone Crypt Key
+- Datenbankpasswörter
 
 Gespeichert in:
-
+```
 /opt/stack/.env
+```
 
+---
 
-(automatisch chmod 600)
+## 📦 Backups (Zero-Knowledge)
+- latest → vollständiger Stand
+- archive/YYYY-MM-DD → Delta Backups
+- snapshots/YYYY-MM-DD → Vollsnapshots
 
-📦 Backup Engine (Encrypted)
-
-Zero-Knowledge Encryption (rclone crypt)
-
-/latest → vollständiger Stand
-
-/archive/YYYY-MM-DD → Deltas
-
-/snapshots/YYYY-MM-DD → Voll-Snapshots
-
-Optional: zweites Ziel → Synology
-
-Backup starten:
+### Backup starten
+```bash
 ./maintenance.sh backup
+```
 
-Snapshots anzeigen:
+### Snapshots anzeigen
+```bash
 ./maintenance.sh snapshots
+```
 
-Restore:
+### Wiederherstellen
+```bash
 ./maintenance.sh restore YYYY-MM-DD
+```
 
-🛠️ Projektstruktur
+---
+
+## 📁 Projektstruktur
+```
 /opt/stack/
 ├── docker-compose.yml
 ├── .env
@@ -125,31 +114,30 @@ Restore:
     ├── Dockerfile
     ├── entrypoint.sh
     └── .dockerignore
+```
 
-🛡️ Security
+---
 
-Traefik Dashboard geschützt durch bcrypt BasicAuth
+## 🛡️ Security
+- Traefik Dashboard via bcrypt geschützt
+- Backups vollständig verschlüsselt (rclone crypt)
+- .env automatisch chmod 600
+- acme.json automatisch chmod 600
+- Keine Services ohne Reverse Proxy erreichbar
 
-StorageBox Backups vollständig verschlüsselt
+---
 
-.env → automatisch 600 gesetzt
-
-acme.json → automatisch 600
-
-Kein Service ist ohne Traefik öffentlich erreichbar
-
-🧰 maintenance.sh
-
-Ein Kommando-Tool:
-
+## 🧰 maintenance.sh
+Kommando-Werkzeug:
+```
 ./maintenance.sh backup
 ./maintenance.sh snapshots
 ./maintenance.sh restore YYYY-MM-DD
 ./maintenance.sh start
 ./maintenance.sh stop
+```
 
-❤️ Author
+---
 
-m0usm
-Selfhosted. DevOps. Hacker-Style.
-Für Homelabs & professionelle Setups.
+## 👤 Author
+**m0usm** – Homelab • DevOps • Selfhosting
