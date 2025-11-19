@@ -10,228 +10,246 @@
   <img src="https://img.shields.io/badge/Backups-Encrypted-0aff9d?style=for-the-badge&logo=protonvpn&logoColor=0aff9d" />
 </div>
 
----
+# README.md
 
-## 🧬 Überblick
-Ein kompletter Dark-Mode Homelab-Stack: Reverse Proxy, SSL, Cloud, Dokumentenmanagement, Office, Workflows, OCR, PDF-Engine, Backups, Zero-Knowledge Encryption – alles automatisch.  
-Ein Kommando. Kein manuelles Editing.
+# Universal Selfhosted Stack
+Nextcloud • Paperless-ngx • Traefik v3 • n8n • OnlyOffice • Verschlüsselte Backups • SFTP Scanner
 
----
+Ein vollständig automatisierter Selfhosted-Stack für Homelabs und Server.
+Reverse Proxy, SSL, Cloud, Dokumentenmanagement, Office, Workflows, OCR, PDF Rendering, Backups und Zero-Knowledge Verschlüsselung – alles über ein einziges Setup-Skript.
 
-## 🔥 Features
-### Core Services
-- Traefik v3 (TLS, Routing, Dashboard, ACME)
+============================================================
+DEUTSCH
+============================================================
+
+## Überblick
+
+Dieser Stack installiert automatisch:
+
+- Traefik v3 (HTTPS, Reverse Proxy, Dashboard, ACME)
 - Nextcloud 31
-- Paperless-ngx (mit Redis + Tika + Gotenberg)
-- OnlyOffice
-- n8n Automations
-- SFTP-Scanner Upload
-- Zero-Knowledge Backups (rclone crypt)
+- Paperless-ngx mit Redis, Tika und Gotenberg
+- OnlyOffice DocumentServer
+- n8n Workflow Automation
+- SFTP Scanner für Paperless Uploads
+- Zero-Knowledge Backups via rclone crypt
+- Optional Synology Backup
 
----
+Alle Passwörter, Konfigurationen und Zertifikate werden automatisch erzeugt.
 
-## ⚡ Installation
-```bash
+------------------------------------------------------------
+## Installation
+
+Befehle zum Starten der Installation:
+
 wget https://raw.githubusercontent.com/m0usm/universal-selfhosted-stack/main/setup.sh -O setup.sh
 chmod +x setup.sh
 sudo ./setup.sh
 
-```
+Das Setup fragt:
 
----
+- Domain/Subdomains
+- Let’s Encrypt E-Mail
+- Paperless DB (PostgreSQL oder SQLite)
+- Hetzner StorageBox Zugangsdaten
+- Optional: Synology SFTP Backup
+- Snapshot-Konfiguration
+- Traefik BasicAuth für Dashboard
 
-## 📝 Setup-Assistent
-Das Script fragt automatisch:
-- Domain-Einstellungen
-- TLS/Let’s Encrypt Mail
-- PostgreSQL für Paperless
-- Hetzner StorageBox Zugang
-- Synology Backup optional
-- Snapshot-Intervall
-- Traefik BasicAuth
+------------------------------------------------------------
+## Zugangsdaten
 
-Alle Secrets werden generiert und gespeichert.
+Automatisch generiert:
 
----
-
-## 🔐 Login & Zugangsdaten
-Nach Installation bekommst du automatisch:
-- Traefik Dashboard Login
-- Nextcloud Admin
-- Paperless Admin Login
-- n8n BasicAuth
-- SFTP Scanner Zugang
-- StorageBox Zugang
-- Rclone Crypt Key
-- Datenbankpasswörter
+- Traefik Dashboard (BasicAuth)
+- Nextcloud Administrator
+- Paperless Administrator
+- n8n BasicAuth + Encryption Key
+- Datenbank Zugangsdaten
+- Storage Box Zugangsdaten
+- rclone crypt Encryption Key
+- SFTP Scanner Login
 
 Gespeichert in:
-```
+
 /opt/stack/.env
-```
 
----
+------------------------------------------------------------
+## Backup-System
 
-## 📦 Backups (Zero-Knowledge)
-- latest → vollständiger Stand
-- archive/YYYY-MM-DD → Delta Backups
-- snapshots/YYYY-MM-DD → Vollsnapshots
+Automatisch erzeugt:
 
-### Backup starten
-```bash
+- latest/ = vollständiger aktueller Stand
+- archive/YYYY-MM-DD/ = tägliche Deltas
+- snapshots/YYYY-MM-DD/ = Vollsnapshots
+
+Manuelles Backup:
+
 ./maintenance.sh backup
-```
 
-### Snapshots anzeigen
-```bash
+Snapshots anzeigen:
+
 ./maintenance.sh snapshots
-```
 
-### Wiederherstellen
-```bash
+Wiederherstellen:
+
 ./maintenance.sh restore YYYY-MM-DD
-```
 
----
+------------------------------------------------------------
+## Projektstruktur
 
-## 📁 Projektstruktur
-```
 /opt/stack/
-├── docker-compose.yml
-├── .env
-├── maintenance.sh
 ├── setup.sh
+├── docker-compose.yml
+├── maintenance.sh
+├── .env
 ├── data/
+│   ├── traefik/
 │   ├── nextcloud/
 │   ├── paperless/
-│   ├── traefik/
 │   ├── n8n/
 │   └── sftp/
 └── backup/
     ├── Dockerfile
     ├── entrypoint.sh
     └── .dockerignore
-```
 
----
+------------------------------------------------------------
+## maintenance.sh Befehle
 
-## 🛡️ Security
-- Traefik Dashboard via bcrypt geschützt
-- Backups vollständig verschlüsselt (rclone crypt)
-- .env automatisch chmod 600
-- acme.json automatisch chmod 600
-- Keine Services ohne Reverse Proxy erreichbar
+./maintenance.sh backup  
+./maintenance.sh snapshots  
+./maintenance.sh restore YYYY-MM-DD  
+./maintenance.sh start  
+./maintenance.sh stop  
 
----
+------------------------------------------------------------
+## Sicherheit
 
-## 🧰 maintenance.sh
-Kommando-Werkzeug:
-```
-./maintenance.sh backup
-./maintenance.sh snapshots
-./maintenance.sh restore YYYY-MM-DD
-./maintenance.sh start
-./maintenance.sh stop
-```
+- Bcrypt BasicAuth für Traefik
+- Alle Backups vollständig verschlüsselt (rclone crypt)
+- Sicherer Zugriff (chmod 600) auf .env und acme.json
+- Keine Container ohne Reverse Proxy erreichbar
 
----
+------------------------------------------------------------
+## Autor
 
-## 👤 Author
-**m0usm** – Homelab • DevOps • Selfhosting
-
-# 🚀 Universal Selfhosted Stack  
-### Nextcloud • Paperless-ngx • Traefik v3 • n8n • OnlyOffice • Zero-Knowledge Backups • SFTP Scanner
-
-Ein vollautomatischer Dark-Mode Homelab-Stack: Reverse Proxy, SSL, Cloud, Dokumentenmanagement, Office-Suite, Workflows, OCR-Engine, PDF-Engine, Backups, Zero-Knowledge Encryption.  
-Komplett installiert mit **einem einzigen Befehl**. Keine manuelle Konfiguration nötig.
-
----
-
-## 🧩 Features
-
-### **Core Services**
-- **Traefik v3** – HTTPS, Routing, Dashboard, ACME
-- **Nextcloud 31** – Cloud, Files, Kalender, Kontakte
-- **Paperless-ngx** – Dokumentenverwaltung (mit Redis, Tika, Gotenberg)
-- **OnlyOffice DocumentServer** – Online Office Suite
-- **n8n Automations** – Workflows, Automatisierung
-- **SFTP Scanner** – Dateien direkt in Paperless importieren
-- **Zero-Knowledge Backups** – Verschlüsselt via rclone crypt
-
-### **Built-In Extras**
-- Automatische Let's Encrypt Zertifikate  
-- Healthchecks für alle Container  
-- Vollautomatische Backups (daily/weekly)  
-- Encrypted Snapshots + Delta-Backups  
-- Vollständiges Restore-System  
-- Firewall-freundlich  
-- Keine manuelle Bearbeitung von Config-Dateien  
-- Alle Passwörter werden automatisch generiert
-
----
-
-## ⚡ Installation (3 Befehle)
-
-```bash
+m0usm
 
 
-![Universal Selfhosted Stack Banner](images/universal-selfhosted-stack-banner.png)
+============================================================
+ENGLISH
+============================================================
 
 # Universal Selfhosted Stack
+Nextcloud • Paperless-ngx • Traefik v3 • n8n • OnlyOffice • Encrypted Backups • SFTP Scanner
 
-Vollautomatischer Docker-Stack für Nextcloud, Paperless-ngx, Traefik v3, n8n, OnlyOffice, verschlüsselte Backups und SFTP-Scanner – alles mit einem einzigen Setup-Skript.
+A fully automated self-hosting environment for servers and homelabs.
+Reverse proxy, HTTPS, cloud storage, document management, workflow automation,
+OCR, PDF rendering, SFTP ingestion and encrypted backups – all deployed using a single setup script.
 
-Fully automated Docker stack for Nextcloud, Paperless-ngx, Traefik v3, n8n, OnlyOffice, encrypted backups and an SFTP scanner – all from a single setup script.
+------------------------------------------------------------
+## Overview
 
----
+This stack automatically deploys:
 
-# Deutsch
+- Traefik v3 (HTTPS, reverse proxy, dashboard, ACME)
+- Nextcloud 31
+- Paperless-ngx with Redis, Tika and Gotenberg
+- OnlyOffice DocumentServer
+- n8n automation workflows
+- SFTP scanner for Paperless ingestion
+- Zero-knowledge encrypted backups using rclone crypt
+- Optional Synology SFTP backup
 
-## Funktionen
+All credentials, certificates and environment variables are generated automatically.
 
-- Ein-Kommando-Setup für kompletten Selfhosted-Stack
-- Traefik v3 als Reverse Proxy mit HTTPS und Dashboard
-- Nextcloud 31 als zentrale Cloud-Plattform
-- Paperless-ngx mit Redis, Tika und Gotenberg für OCR & PDF-Verarbeitung
-- OnlyOffice DocumentServer für Online-Office
-- n8n für Automatisierungen und Workflows
-- SFTP-Scanner für direkten Dokumenten-Upload nach Paperless
-- Vollautomatische Backups (latest + Delta-Archive + Snapshots)
-- Zero-Knowledge Backups via rclone crypt (Hetzner Storage Box)
-- Optional: zweites Backup-Ziel auf Synology per SFTP
-
-## Services
-
-- **Traefik v3** – Routing, HTTPS, Let’s Encrypt, Dashboard (BasicAuth)
-- **Nextcloud 31** – Files, Kalender, Kontakte
-- **Paperless-ngx** – Dokumentenmanagement mit OCR, Tika und Gotenberg
-- **OnlyOffice** – Webbasierte Office-Suite
-- **n8n** – Workflow-Automation im Browser
-- **SFTP-Scanner** – Upload-Verzeichnis direkt an Paperless-Consume
-- **Backup-Container** – Dumps + rclone-Sync + Snapshots (StorageBox + optional Synology)
-
-## Voraussetzungen
-
-- Linux-Server (Debian/Ubuntu oder kompatibel)
-- root oder sudo-Zugriff
-- Docker + Docker Compose (wird bei Bedarf automatisch installiert)
-- Eine Domain (z. B. `example.com`) mit DNS-Einträgen für:
-  - `traefik.example.com`
-  - `cloud.example.com`
-  - `paperless.example.com`
-  - `n8n.example.com`
-  - `office.example.com`
-- Hetzner Storage Box (für verschlüsselte Backups, SFTP/SSH aktiviert)
-- Optional: Synology mit SFTP/SSH für zweites Backup-Ziel
-
+------------------------------------------------------------
 ## Installation
 
-```bash
-wget https://raw.githubusercontent.com/m0usm/universal-selfhosted-stack/main/setup.sh -O setup.sh
-chmod +x setup.sh
-sudo ./setup.sh
+Install using:
 
 wget https://raw.githubusercontent.com/m0usm/universal-selfhosted-stack/main/setup.sh -O setup.sh
 chmod +x setup.sh
 sudo ./setup.sh
 
+The installer will ask for:
+
+- Domain and subdomains
+- Let’s Encrypt email
+- Paperless database selection
+- Hetzner Storage Box credentials
+- Optional Synology backup target
+- Snapshot schedule
+- BasicAuth for Traefik dashboard
+
+------------------------------------------------------------
+## Credentials
+
+Generated automatically:
+
+- Traefik dashboard BasicAuth
+- Nextcloud admin user
+- Paperless admin user
+- n8n BasicAuth + encryption key
+- Database credentials
+- Storage Box login
+- rclone crypt encryption key
+- SFTP scanner credentials
+
+Stored in:
+
+/opt/stack/.env
+
+------------------------------------------------------------
+## Backup System
+
+Automatic backup structure:
+
+- latest/ = full current state  
+- archive/YYYY-MM-DD/ = daily deltas  
+- snapshots/YYYY-MM-DD/ = complete snapshots  
+
+Manual backup:
+
+./maintenance.sh backup
+
+List snapshots:
+
+./maintenance.sh snapshots
+
+Restore example:
+
+./maintenance.sh restore 2025-01-15
+
+------------------------------------------------------------
+## Project Structure
+
+/opt/stack/
+├── setup.sh
+├── docker-compose.yml
+├── maintenance.sh
+├── .env
+├── data/
+│   ├── traefik/
+│   ├── nextcloud/
+│   ├── paperless/
+│   ├── n8n/
+│   └── sftp/
+└── backup/
+    ├── Dockerfile
+    ├── entrypoint.sh
+    └── .dockerignore
+
+------------------------------------------------------------
+## Security
+
+- Traefik dashboard protected via bcrypt BasicAuth
+- All backups encrypted with rclone crypt
+- Sensitive files restricted with chmod 600
+- No exposed services without reverse proxy
+
+------------------------------------------------------------
+## License
+
+MIT License
