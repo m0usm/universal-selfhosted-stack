@@ -6,8 +6,9 @@ set -euo pipefail
 sed -i 's/\xC2\xA0/ /g' "$0"
 
 # =============================
-# Universal One-Shot Init (Traefik + Nextcloud + Paperless + n8n + Backup + SFTP Scanner)
-# =========================================================================
+# Universial Stack Init
+# (Traefik + Nextcloud + Paperless + n8n + Backup + SFTP Scanner)
+# =============================
 
 # -------- helpers ----------
 genpw() { tr -dc 'A-Za-z0-9' </dev/urandom | head -c "${1:-24}"; echo; }
@@ -207,7 +208,7 @@ N8N_KEY="$(genpw 32)"
 SFTP_USER="scanner"
 SFTP_PASS="$(genpw 20)"
 
-# NEU: Rclone Crypt Passwort für StorageBox-Verschlüsselung
+# Rclone Crypt Passwort für StorageBox-Verschlüsselung
 SB_CRYPT_PASS="$(genpw 32)"
 
 # -------- 5) .env schreiben ----------
@@ -630,7 +631,7 @@ cat > "${BASE_DIR}/backup/entrypoint.sh" <<'EOF'
 #!/bin/sh
 set -e
 
-# NEUE CONFIG: Zweistufige Rclone-Remote (SFTP -> CRYPT)
+# Zweistufige Rclone-Remote (SFTP -> CRYPT)
 
 # 1. Basis-SFTP-Verbindung zur Storage Box (Name: StorageBoxBase)
 export RCLONE_CONFIG_STORAGEBOXBASE_TYPE=sftp
@@ -768,7 +769,7 @@ run_restore() {
         echo "ℹ️ Nextcloud-Dump nicht gefunden, überspringe DB-Restore."
       fi
 
-      if [ "${PAPERLESS_USE_POSTGRES:-no}" = "yes" && -f /data/dbdumps/paperless.sql ]; then
+      if [ "${PAPERLESS_USE_POSTGRES:-no}" = "yes" ] && [ -f /data/dbdumps/paperless.sql ]; then
         echo "-> Spiele Paperless (PostgreSQL) Dump ein."
         psql -h paperless_db -U paperless paperless < /data/dbdumps/paperless.sql || echo "WARNUNG: Paperless DB-Restore fehlgeschlagen."
       else
