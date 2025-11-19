@@ -1,4 +1,4 @@
-# 🌌 Universal Selfhosted Stack
+# Universal Selfhosted Stack
 ### Nextcloud • Paperless-ngx • Traefik v3 • n8n • OnlyOffice • Zero-Knowledge Backups • SFTP-Scanner
 
 ---
@@ -10,17 +10,12 @@
   <img src="https://img.shields.io/badge/Backups-Encrypted-0aff9d?style=for-the-badge&logo=protonvpn&logoColor=0aff9d" />
 </div>
 
-# README.md
 
-# Universal Selfhosted Stack
-Nextcloud • Paperless-ngx • Traefik v3 • n8n • OnlyOffice • Verschlüsselte Backups • SFTP Scanner
 
 Ein vollständig automatisierter Selfhosted-Stack für Homelabs und Server.
 Reverse Proxy, SSL, Cloud, Dokumentenmanagement, Office, Workflows, OCR, PDF Rendering, Backups und Zero-Knowledge Verschlüsselung – alles über ein einziges Setup-Skript.
 
-============================================================
 DEUTSCH
-============================================================
 
 ## Überblick
 
