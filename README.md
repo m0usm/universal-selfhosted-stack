@@ -32,9 +32,10 @@ Ein Kommando. Kein manuelles Editing.
 
 ## ⚡ Installation
 ```bash
-wget https://raw.githubusercontent.com/m0usm/UNIVERSAL-SELFHOSTED-STACK/main/setup.sh -O setup.sh
+wget https://raw.githubusercontent.com/m0usm/universal-selfhosted-stack/main/setup.sh -O setup.sh
 chmod +x setup.sh
 sudo ./setup.sh
+
 ```
 
 ---
