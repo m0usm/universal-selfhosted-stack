@@ -21,6 +21,10 @@
 Ein vollständig automatisierter Selfhosted-Stack für Homelabs und Server.
 Reverse Proxy, SSL, Cloud, Dokumentenmanagement, Office, Workflows, OCR, PDF Rendering, Backups und Zero-Knowledge Verschlüsselung – alles über ein einziges Setup-Skript.
 
+A fully automated self-hosting environment for servers and homelabs.
+Reverse proxy, HTTPS, cloud storage, document management, workflow automation,
+OCR, PDF rendering, SFTP ingestion and encrypted backups – all deployed using a single setup script.
+
 # DEUTSCH
 
 # Universal Selfhosted Stack
