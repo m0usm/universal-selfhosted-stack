@@ -250,7 +250,7 @@ Restore example:
 
 MIT License
 
-wget https://raw.githubusercontent.com/m0usm/universal-selfhosted-stack/main/setup.sh -O setup.sh
-chmod +x setup.sh
+wget https://raw.githubusercontent.com/m0usm/universal-selfhosted-stack/main/setup.sh -O setup.sh 
+chmod +x setup.sh 
 sudo ./setup.sh
 
