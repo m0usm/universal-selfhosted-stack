@@ -1,326 +1,324 @@
 # universial-stack-init
 
-Production-ready Bash installer that deploys a complete **Traefik + Nextcloud + Paperless + n8n** stack with healthchecks, SFTP, encrypted backups & secure defaults.
+> Production-ready Bash installer that deploys a complete Traefik + Nextcloud + Paperless + n8n stack with healthchecks, SFTP, backups & secure defaults.
 
-> Self-hosted stack for people who just want a sane baseline without juggling 10 different docker-compose snippets.
+`universial-stack-init.sh` ist ein One-Shot-Installer für einen vollständigen Self-Hosted-Stack:
+
+- ✅ Traefik v3 mit Let's Encrypt & BasicAuth-Dashboard  
+- ✅ Nextcloud 29 + MariaDB 11  
+- ✅ Paperless-ngx mit Tika, Gotenberg & Redis  
+- ✅ n8n mit BasicAuth & korrekt gesetzten URLs  
+- ✅ OnlyOffice Document Server  
+- ✅ SFTP-Scanner für Paperless (z. B. für MFPs/Scanner)  
+- ✅ Backup-Container mit verschlüsselter Hetzner Storage Box (rclone `crypt`) & optionaler Synology-Spiegelung  
+- ✅ Wartungs-Skript `maintenance.sh` für Backup/Restore/Start/Stop  
+
+Alles in **einem Bash-Script**, reproduzierbar und nachvollziehbar.
 
 ---
 
 ## Features
 
-- **Traefik v3 reverse proxy**
-  - Automatic Let's Encrypt certificates (HTTP-01)
-  - Dashboard behind bcrypt **BasicAuth**
-  - Rate limiting middleware for the dashboard
-- **Nextcloud 29 + MariaDB 11**
-  - PHP memory & upload limits preconfigured
-  - OnlyOffice document server container included
+### 🧩 Core-Services
+
+- **Traefik v3.1**
+  - HTTP/HTTPS (Ports 80/443)
+  - Automatisches Let's Encrypt (HTTP-01)
+  - Dashboard hinter BasicAuth (bcrypt)
+  - Rate-Limit-Middleware fürs Dashboard
+  - Zertifikate in `data/traefik/acme.json` (chmod 600)
+
+- **Nextcloud 29**
+  - MariaDB 11 als DB
+  - Eigener Datenordner `data/nextcloud`
+  - PHP Limits:
+    - `PHP_MEMORY_LIMIT=1024M`
+    - `PHP_UPLOAD_LIMIT=1024M`
+  - Ready für OnlyOffice Integration
+
 - **Paperless-ngx**
-  - Apache Tika for OCR and Gotenberg for PDF conversion
-  - Optional PostgreSQL 16, otherwise SQLite
-  - Redis queue and HTTP healthchecks
-- **n8n automation**
-  - BasicAuth enabled
-  - Correct `N8N_HOST`, `WEBHOOK_URL` and `N8N_EDITOR_BASE_URL`
-  - Persistent data in `data/n8n`
-- **SFTP scanner**
-  - `atmoz/sftp` on host port `2222`
-  - User `scanner` with generated password
-  - Mapped directly to Paperless `consume/`, `done/`, `fail/`
-- **Encrypted backups**
-  - Dedicated backup container (Alpine + rclone + cron)
-  - Hetzner Storage Box via SFTP (port 23) + **rclone crypt**
-  - Layout: `latest/`, `archive/YYYY-MM-DD`, `snapshots/YYYY-MM-DD`
-  - Optional Synology mirror via SFTP (port 22)
-  - Automatic DB dumps for Nextcloud (MariaDB) and optionally Paperless (PostgreSQL)
-- **Maintenance script**
-  - `maintenance.sh backup|snapshots|restore|start|stop`
-  - ASCII overview of backup/restore flow
-- **Safety niceties**
-  - Cleans invisible Unicode NBSP characters from generated files
-  - Healthcheck + retry loop for containers
-  - All secrets pushed into a `.env` with restrictive permissions
+  - Apache Tika 3 & Gotenberg 8 für OCR & PDF-Handling
+  - Redis-Queue
+  - DB:
+    - Standard: SQLite  
+    - Optional: PostgreSQL 16 (`PAPERLESS_USE_POSTGRES=yes`)
+  - Datenverzeichnisse:
+    - `data/paperless/data`
+    - `data/paperless/media`
+    - `data/paperless/export`
+    - `data/paperless/consume` (+ `done`/`fail`)
 
----
+- **OnlyOffice DocumentServer**
+  - Läuft hinter Traefik
+  - Einfach in Nextcloud als Document Server URL eintragen (`https://office.deinedomain.tld`)
 
-## Requirements
+- **n8n**
+  - BasicAuth aktiviert
+  - `N8N_ENCRYPTION_KEY` wird automatisch generiert und im Setup angezeigt
+  - Korrekte URLs:
+    - `WEBHOOK_URL`
+    - `N8N_EDITOR_BASE_URL`
+  - Persistente Daten in `data/n8n`
 
-- A Linux host (Debian/Ubuntu recommended)
-- Root or `sudo` access
-- A domain with DNS records for:
-  - `traefik.<your-domain>`
-  - `cloud.<your-domain>`
-  - `paperless.<your-domain>`
-  - `n8n.<your-domain>`
-  - `office.<your-domain>`
-- Open ports `80` and `443` on the host
-- Hetzner Storage Box credentials (optional but recommended)
-- Optional: Synology reachable via SFTP for secondary backups
+### 📥 SFTP-Scanner für Paperless
 
-If Docker is missing, the script will install it on **Debian/Ubuntu** using `get.docker.com`.  
-On other distros you need to install Docker and the Docker Compose plugin yourself.
+- Container: `atmoz/sftp`
+- Generierter User `scanner` (User + Passwort in `.env`)
+- Port: `2222`
+- Verknüpfte Verzeichnisse:
+  - `/home/scanner/upload` → `data/paperless/consume`
+  - `/home/scanner/done`
+  - `/home/scanner/fail`
+- Ideal für Multifunktionsdrucker/Scanner, die per SFTP ablegen können.
 
----
+### 💾 Backup & Restore
 
-## Installation
+Dedizierter `backup`-Container (Alpine + rclone + mysql-client + postgresql-client + dcron):
 
-### 1. Download the installer
+- Backups nach **verschlüsselter Hetzner Storage Box**:
+  - Verbindung per SFTP (Port 23)
+  - rclone Remote:
+    - `StorageBoxBase` (SFTP)
+    - `StorageBox` (rclone `crypt` darüber)
+  - Struktur auf Storage Box:
+    ```txt
+    StorageBox:
+    ├─ latest/                 # aktueller Stand (voll)
+    ├─ archive/                # tägliche Deltas
+    │   ├─ YYYY-MM-DD/
+    │   └─ …
+    └─ snapshots/              # Vollsnapshots
+        ├─ YYYY-MM-DD/
+        └─ …
+    ```
+
+- Optionaler **Synology-Mirror** (SFTP Port 22)
+  - Remote: `SYNOLOGY:${SYNOLOGY_PATH}/snapshots/…`
+
+- Backuptypen:
+  - `latest`: Vollsync aktueller Stand
+  - `archive/YYYY-MM-DD`: Deltas pro Tag
+  - `snapshots/YYYY-MM-DD`: vollständiger Stand als Snapshot
+
+- Aufbewahrung:
+  - `KEEP_DAYS` → wie lange Archive (`archive/*`) behalten werden
+  - `SNAPSHOT_KEEP_DAYS` → wie lange Snapshots (`snapshots/*`) behalten werden
+  - `WEEKLY_SNAPSHOT`:
+    - `0` → täglicher Snapshot
+    - `1` → nur sonntags Snapshot
+
+- Cron:
+  - Im Backup-Container: `0 2 * * * /entrypoint.sh backup` (täglich 02:00 Uhr)
+
+### 🛠 Wartungs-Skript
+
+`maintenance.sh` wird automatisch im `BASE_DIR` erzeugt:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/m0usm/universial-stack-init/main/universial-stack-init.sh -o universial-stack-init.sh
+./maintenance.sh              # Übersicht + Diagramm
+./maintenance.sh backup       # Sofort-Backup
+./maintenance.sh snapshots    # Liste Archive & Snapshots
+./maintenance.sh restore 2025-11-16  # Restore auf Datumssnapshot
+./maintenance.sh stop         # Alle Container stoppen
+./maintenance.sh start        # Alle Container starten
+Voraussetzungen
+Server mit:
+
+Debian / Ubuntu (andere können gehen, Installer versucht aber nur bei Debian/Ubuntu Docker automatisch zu installieren)
+
+Root oder sudo
+
+Offen:
+
+TCP 80 (HTTP)
+
+TCP 443 (HTTPS)
+
+Domain mit DNS-Einträgen für:
+
+traefik.<deinedomain>
+
+cloud.<deinedomain>
+
+paperless.<deinedomain>
+
+n8n.<deinedomain>
+
+office.<deinedomain>
+
+Hetzner Storage Box (oder kompatible SFTP-Box)
+
+Host, User, Passwort
+
+Optional: Synology mit SFTP-Zugriff
+
+Quick Start
+⚠️ URL anpassen! Ersetze <DEIN-USER> und <DEIN-REPO> durch deinen GitHub-Namen und Reponamen.
+
+bash
+Code kopieren
+cd /opt
+git clone https://github.com/<DEIN-USER>/<DEIN-REPO>.git
+cd <DEIN-REPO>
+
+# Script herunterladen (direkt aus Raw, z. B. im README verlinkt)
+curl -fsSL https://raw.githubusercontent.com/<DEIN-USER>/<DEIN-REPO>/main/universial-stack-init.sh -o universial-stack-init.sh
+
 chmod +x universial-stack-init.sh
-Always read the script before running it on a production system.
-
-2. Run the script
-bash
-Code kopieren
 sudo ./universial-stack-init.sh
-You will be asked for a few inputs:
+Das Script fragt dich interaktiv nach:
 
-Base directory for the stack (default: /opt/stack)
+Basis-Verzeichnis für den Stack (/opt/stack default)
 
-Delete / wipe options (keep data, remove containers, remove containers + volumes, or nuke the whole directory)
+Let’s-Encrypt E-Mail
 
-Let’s Encrypt email
+Basis-Domain (z. B. example.com)
 
-Base domain, e.g. example.com
+Subdomains für Traefik / Nextcloud / Paperless / n8n / OnlyOffice
 
-Traefik / Nextcloud / Paperless / n8n / OnlyOffice subdomains
+Paperless DB: PostgreSQL (empfohlen) oder SQLite
 
-Traefik dashboard credentials (BasicAuth)
+Hetzner Storage Box Zugang:
 
-Paperless DB choice
+User, Host, Passwort, Pfad (z. B. /backup)
 
-PostgreSQL (recommended) or SQLite
+Optional Synology Backup:
 
-Hetzner Storage Box
+Host, User, Passwort, Pfad, Port
 
-User (e.g. u123456 / ssh-u123456)
+Backup-Parameter:
 
-Host (e.g. u123456.your-storagebox.de)
+KEEP_DAYS (Standard: 180)
 
-Path on the box (default: /backup)
+WEEKLY_SNAPSHOT (0=täglich, 1=sonntags)
 
-Optional Synology backup
+SNAPSHOT_KEEP_DAYS (Standard: 30)
 
-Host/IP, user, password, path, port (default 22)
+Nach dem Setup
+Das Script zeigt dir am Ende:
 
-Retention
+Traefik Dashboard:
+https://traefik.<deinedomain>
+→ BasicAuth-User wie eingegeben
 
-Days to keep daily delta archives
+Nextcloud:
+https://cloud.<deinedomain>
 
-Snapshots daily or weekly (Sunday)
+Paperless-ngx:
+https://paperless.<deinedomain>
+→ Default-User/Pass:
 
-Days to keep full snapshots
+User: admin
 
-All passwords and secrets are generated automatically and written to:
+Passwort: wird im Setup-Output angezeigt
 
-text
-Code kopieren
-<BASE_DIR>/.env
-with chmod 600.
+n8n:
+https://n8n.<deinedomain>
+→ BasicAuth-User admin + Passwort aus Output
+→ Wichtig: N8N_ENCRYPTION_KEY sichern
 
-After that the script:
+OnlyOffice:
+https://office.<deinedomain>
 
-Creates the full directory structure under <BASE_DIR>
+SFTP-Scanner:
 
-Writes .env and docker-compose.yml
-
-Generates a bcrypt .htpasswd for Traefik
-
-Builds the backup container image
-
-Runs docker compose pull and docker compose up -d (with --wait when available)
-
-Checks container status in a retry loop and prints a summary
-
-Services & Endpoints
-Assuming your base domain is example.com, the default endpoints are:
-
-Traefik dashboard – https://traefik.example.com
-
-Nextcloud – https://cloud.example.com
-
-Paperless-ngx – https://paperless.example.com
-
-n8n – https://n8n.example.com
-
-OnlyOffice – https://office.example.com
-
-The script prints:
-
-Traefik BasicAuth user
-
-Paperless admin user + password
-
-n8n BasicAuth user + password
-
-N8N_ENCRYPTION_KEY
-
-SFTP user/password for the scanner
-
-Storage Box details + rclone crypt password
-
-Backup concept
-Backups are handled by a dedicated container built from backup/Dockerfile.
-
-Inside the backup container
-Daily cron at 02:00:
-
-cron
-Code kopieren
-0 2 * * * /entrypoint.sh backup
-What backup does
-Creates DB dumps into /data/dbdumps:
-
-nextcloud.sql (MariaDB)
-
-paperless.sql (PostgreSQL, if enabled)
-
-Syncs /data → StorageBox:latest
-
-Moves changed files into StorageBox:archive/YYYY-MM-DD
-
-Optionally creates full snapshots in StorageBox:snapshots/YYYY-MM-DD
-
-Daily or weekly (Sunday), depending on WEEKLY_SNAPSHOT
-
-Deletes old archives and snapshots based on:
-
-KEEP_DAYS
-
-SNAPSHOT_KEEP_DAYS
-
-Optionally mirrors snapshots to Synology under:
-
-text
-Code kopieren
-SYNOLOGY:<SYNOLOGY_PATH>/snapshots/YYYY-MM-DD
-Remote layout (encrypted)
-On the Hetzner Storage Box (inside the encrypted StorageBox remote):
-
-text
-Code kopieren
-StorageBox:
-├─ latest/                 # current full state of /data
-├─ archive/                # daily deltas
-│   ├─ 2025-11-10/
-│   ├─ 2025-11-11/
-│   └─ …
-└─ snapshots/              # full frozen images
-    ├─ 2025-11-16/
-    ├─ 2025-11-23/
-    └─ …
-Everything in StorageBox: is encrypted via rclone crypt.
-The crypt password is generated and stored as STORAGEBOX_CRYPT_PASS in .env.
-
-Restore workflow
-Restores are triggered via the maintenance script.
-
-From <BASE_DIR>:
-
-bash
-Code kopieren
-./maintenance.sh restore 2025-11-16
-Steps:
-
-Stop all containers (docker compose stop)
-
-Run backup restore <DATE> inside the backup container
-
-Sync data back into /data from either:
-
-StorageBox:snapshots/<DATE> (preferred), or
-
-StorageBox:latest (+ optional archive/<DATE> overlay)
-
-Re-import DB dumps when available:
-
-Nextcloud (MariaDB)
-
-Paperless (PostgreSQL, if enabled)
-
-Start containers again (docker compose up -d)
-
-maintenance.sh
-The installer creates a helper script in <BASE_DIR>/maintenance.sh.
-
-Usage:
-
-bash
-Code kopieren
-./maintenance.sh            # show help + diagram
-./maintenance.sh backup     # trigger an immediate backup
-./maintenance.sh snapshots  # list archives + snapshots
-./maintenance.sh restore 2025-11-16  # restore exact snapshot
-./maintenance.sh stop       # stop all services
-./maintenance.sh start      # start all services
-The script prints a small ASCII diagram of the backup/restore model when run without arguments.
-
-SFTP scanner
-The stack includes an atmoz/sftp container for scanners / MFPs etc.
-
-Host: your server IP or domain
+Host: deine Server-IP oder Domain
 
 Port: 2222
 
 User: scanner
 
-Password: random, printed at the end of the setup
+Passwort: im Setup-Output
 
-Paths inside the container:
-
-text
+Restore-Beispiele
+1. Restore auf bestimmten Snapshot (Datum)
+bash
 Code kopieren
-/home/scanner/upload  -> mapped to data/paperless/consume
-/home/scanner/done    -> mapped to data/paperless/consume/done
-/home/scanner/fail    -> mapped to data/paperless/consume/fail
-Upload scans to upload/, let Paperless process them, and optionally move them to done/ / fail/ depending on your workflows.
+cd /opt/stack   # oder dein BASE_DIR
+./maintenance.sh restore 2025-11-16
+Ablauf:
 
-Security notes
-Traefik dashboard is protected by bcrypt BasicAuth (.htpasswd).
+Alle Container werden gestoppt.
 
-acme.json for Let’s Encrypt is created with chmod 600.
+Backup-Container zieht StorageBox:snapshots/2025-11-16 → /data.
 
-Secrets (DB credentials, encryption keys, SFTP passwords, rclone crypt passphrase) are written to .env with chmod 600.
+DB-Dumps (nextcloud.sql und optional paperless.sql) werden eingespielt.
 
-Backups on the Storage Box are fully encrypted using rclone crypt.
+Container werden wieder gestartet.
 
-The script strips potential invisible NBSP characters from itself and generated files to avoid weird Bash/YAML issues.
+2. Restore ohne Datum (aktueller Stand)
+bash
+Code kopieren
+./maintenance.sh restore latest
+Script interpretiert das als:
 
-You are still responsible for:
+Sync von StorageBox:latest → /data
 
-Hardening the host OS (SSH, firewall, updates)
+Optional Overlay von StorageBox:archive/<Datum> wenn angegeben
 
-Restricting access to the Traefik dashboard
+(In deinem Script ist REQ_DATE frei wählbar – du kannst z. B. restore 2025-11-10 für Archiv + latest nutzen.)
 
-Keeping Docker images up to date (docker compose pull && docker compose up -d)
+Sicherheit
+Traefik-Dashboard ist:
 
-Troubleshooting
-Containers keep restarting
+Hinter BasicAuth (bcrypt)
 
-Run docker compose ps and docker compose logs <service> in <BASE_DIR>
+Mit Rate-Limit gesichert
 
-Traefik doesn’t get certificates
+acme.json hat chmod 600
 
-Check DNS records for your domain
+Alle wichtigen Secrets:
 
-Make sure ports 80/443 are reachable from the internet
+werden automatisch generiert (genpw)
 
-Backup container fails
+werden in .env geschrieben (Permissions 600)
 
-Check Storage Box credentials & firewall
+Storage Box:
 
-Verify STORAGEBOX_HOST, STORAGEBOX_USER, STORAGEBOX_PASSWORD, STORAGEBOX_PATH
+Zugriff per SFTP mit Passwort
 
-Restore didn’t bring back DB data
+Daten werden via rclone crypt verschlüsselt abgelegt
 
-Ensure dbdumps/nextcloud.sql / dbdumps/paperless.sql exist in the snapshot
+Synology:
 
-Check DB logs after restore
+Verbindung per SFTP (optionale zweite Kopie deiner Daten)
 
-License
-This project is licensed under the MIT License.
-See the LICENSE file for details.
+FAQ (Kurz)
+Q: Kann ich Paperless ohne PostgreSQL nutzen?
+A: Ja. Standard ist SQLite. PostgreSQL kannst du beim Setup explizit aktivieren (empfohlen für größere Setups).
 
-Coded by m0usm 🚀
+Q: Kann ich Domains wie cloud.meinefirma.de statt cloud.example.com nutzen?
+A: Ja. Du gibst beim Setup einfach deine echte Basisdomain ein und passt die Subdomains an. Wichtiger Punkt: DNS-Einträge müssen passen.
+
+Q: Muss Docker schon installiert sein?
+A: Nicht zwingend. Auf Debian/Ubuntu versucht das Script Docker automatisch zu installieren. Auf anderen Distros musst du Docker/Compose vorher selbst installieren.
+
+Lizenz
+Hinweis: Wähle im GitHub-Dialog eine Lizenz und trage sie hier ein.
+Übliche Wahl: MIT oder Apache-2.0.
+
+Beispiel:
+
+txt
+Code kopieren
+MIT License
+
+Copyright (c) 2025 ...
+
+Permission is hereby granted, free of charge, to any person obtaining a copy ...
+TODO / Roadmap (Ideen)
+ Beispiel-docker-compose.override.yml für Anpassungen
+
+ Optionaler Mail-Stack (SMTP Relay, Mailserver)
+
+ Zusätzliche Dienste (z. B. Jellyfin, Paperless-Import von IMAP)
+
+ Automatische Hardening-Tipps für SSH / Firewall
+
+Wenn du mir deine echte GitHub-URL gibst (user/repo), kann ich dir den curl-Einzeiler oben direkt mit der richtigen Raw-URL fertig machen.
+
+
+
+
+
+
