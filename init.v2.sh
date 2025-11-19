@@ -65,6 +65,8 @@ if [ "$TFA_PASS" != "$TFA_PASS2" ]; then
   err "Passwörter stimmen nicht überein."
   exit 1
 fi
+# Passwort merken für die Anzeige am Ende
+TFA_PASS_CLEAR="$TFA_PASS"
 
 # Paperless DB-Wahl
 read -rp "Paperless mit PostgreSQL betreiben? (empfohlen) [Y/n]: " PGPAPER
@@ -346,6 +348,7 @@ services:
     restart: unless-stopped
     depends_on:
       - nextcloud_db
+      - redis
     environment:
       - TZ=${TZ}
       - MYSQL_HOST=nextcloud_db
@@ -354,6 +357,8 @@ services:
       - MYSQL_PASSWORD=${NEXTCLOUD_DB_PASSWORD}
       - PHP_MEMORY_LIMIT=1024M
       - PHP_UPLOAD_LIMIT=1024M
+      - REDIS_HOST=redis
+      - REDIS_HOST_PORT=6379
     volumes:
       - ./data/nextcloud/html:/var/www/html
     labels:
@@ -644,7 +649,7 @@ export RCLONE_CONFIG_STORAGEBOX_SFTP_HOST_KEY_CHECKING=false
 # 2. Verschlüsselte Schicht ('StorageBox' ist der Name, der im Skript verwendet wird)
 export RCLONE_CONFIG_STORAGEBOX_TYPE=crypt
 # Verwende die SFTP-Remote als Basis und den StorageBox-Pfad als Root-Verzeichnis
-export RCLONE_CONFIG_STORAGEBOX_REMOTE=storagebox-sftp:${STORAGEBOX_PATH}
+export RCLONE_CONFIG_STORAGEBOX_REMOTE=storagebox_sftp:${STORAGEBOX_PATH}
 export RCLONE_CONFIG_STORAGEBOX_FILENAME_ENCRYPTION=standard
 export RCLONE_CONFIG_STORAGEBOX_PASSWORD="$(rclone obscure "${STORAGEBOX_CRYPT_PASS}")"
 export RCLONE_CONFIG_STORAGEBOX_PASSWORD2="$(rclone obscure "${STORAGEBOX_CRYPT_PASS}")"
@@ -664,6 +669,28 @@ setup_synology_remote() {
     echo "ℹ️ Synology-Variablen nicht gesetzt – überspringe Synology-Vorbereitung."
     return 1
   fi
+}
+
+restore_dbs() {
+  echo "🔄 Beginne DB-Wiederherstellung..."
+
+  if [ -f /data/dbdumps/nextcloud.sql ]; then
+    echo "-> Spiele Nextcloud (MariaDB) Dump ein."
+    mysql -h nextcloud_db -u${NEXTCLOUD_DB_USER} -p${NEXTCLOUD_DB_PASSWORD} ${NEXTCLOUD_DB} < /data/dbdumps/nextcloud.sql || echo "WARNUNG: Nextcloud DB-Restore fehlgeschlagen."
+  else
+    echo "ℹ️ Nextcloud-Dump nicht gefunden, überspringe DB-Restore."
+  fi
+
+  if [ "${PAPERLESS_USE_POSTGRES:-no}" = "yes" ] && [ -f /data/dbdumps/paperless.sql ]; then
+    echo "-> Spiele Paperless (PostgreSQL) Dump ein."
+    export PGPASSWORD=${PAPERLESS_DB_PASSWORD}
+    psql -h paperless_db -U paperless paperless < /data/dbdumps/paperless.sql || echo "WARNUNG: Paperless DB-Restore fehlgeschlagen."
+    unset PGPASSWORD
+  else
+    echo "ℹ️ Paperless-PostgreSQL-Dump nicht gefunden oder SQLite verwendet, überspringe."
+  fi
+
+  echo "✅ DB-Wiederherstellung abgeschlossen."
 }
 
 run_backup() {
@@ -751,32 +778,13 @@ run_backup() {
 run_restore() {
   REQ_DATE="${1:-}"
 
-  export PGPASSWORD=${PAPERLESS_DB_PASSWORD}
-
   if [ -n "${REQ_DATE}" ]; then
     SNAP_DIR="StorageBox:snapshots/${REQ_DATE}"
     if rclone lsd "${SNAP_DIR}" --fast-list >/dev/null 2>&1; then
       echo "🧊 Wiederherstellung aus Vollsnapshot ${REQ_DATE}..."
       rclone sync "${SNAP_DIR}" /data --fast-list -v --log-file=/dev/stdout
-      echo "✅ Dateiwiederherstellung abgeschlossen (vollständiger Datumssnapshot)."
-
-      echo "🔄 Beginne DB-Wiederherstellung..."
-
-      if [ -f /data/dbdumps/nextcloud.sql ]; then
-        echo "-> Spiele Nextcloud (MariaDB) Dump ein."
-        mysql -h nextcloud_db -u${NEXTCLOUD_DB_USER} -p${NEXTCLOUD_DB_PASSWORD} ${NEXTCLOUD_DB} < /data/dbdumps/nextcloud.sql || echo "WARNUNG: Nextcloud DB-Restore fehlgeschlagen."
-      else
-        echo "ℹ️ Nextcloud-Dump nicht gefunden, überspringe DB-Restore."
-      fi
-
-      if [ "${PAPERLESS_USE_POSTGRES:-no}" = "yes" ] && [ -f /data/dbdumps/paperless.sql ]; then
-        echo "-> Spiele Paperless (PostgreSQL) Dump ein."
-        psql -h paperless_db -U paperless paperless < /data/dbdumps/paperless.sql || echo "WARNUNG: Paperless DB-Restore fehlgeschlagen."
-      else
-        echo "ℹ️ Paperless-PostgreSQL-Dump nicht gefunden oder SQLite verwendet, überspringe."
-      fi
-
-      echo "✅ DB-Wiederherstellung abgeschlossen."
+      restore_dbs
+      echo "✅ Restore abgeschlossen."
       return 0
     else
       echo "⚠️ Vollsnapshot ${REQ_DATE} nicht gefunden. Fallback auf 'latest' + ggf. Tages-Archiv."
@@ -796,6 +804,7 @@ run_restore() {
     fi
   fi
 
+  restore_dbs
   echo "✅ Restore abgeschlossen."
 }
 
@@ -991,28 +1000,56 @@ esac
 EOF
 chmod +x "${MAINT_FILE}"
 
-# -------- 12) Abschließende Hinweise ----------
+# -------- 12) Abschließende Hinweise + ALLE wichtigen Logins ----------
 say "🎉 Setup abgeschlossen!"
 echo ""
-echo "--- Zugangsdaten ---"
-echo "🌐 Traefik Dashboard: https://${TRAEFIK_HOST} (BasicAuth: ${TFA_USER}/Ihr-Passwort)"
-echo "☁️ Nextcloud: https://${NEXTCLOUD_HOST} (Erste Anmeldung über Web)"
-echo "📄 Paperless: https://${PAPERLESS_HOST} (User: ${PAPERLESS_ADMIN}, Passwort: ${PAPERLESS_ADMIN_PASS})"
-echo "⚙️ n8n: https://${N8N_HOST} (BasicAuth: ${N8N_USER}/${N8N_PASS})"
-echo "  💡 N8N Encryption Key: ${N8N_KEY} (BITTE SICHERN!)"
+echo "==================== WICHTIGE LOGINS & SECRETS ===================="
 echo ""
-echo "🔑 SFTP Scanner (Zum Hochladen nach Paperless):"
-echo "  Host: [IHRE IP/DOMAIN]"
-echo "  Port: 2222"
-echo "  User: ${SFTP_USER}"
-echo "  Pass: ${SFTP_PASS}"
+echo "🌐 Traefik Dashboard:"
+echo "   URL:  https://${TRAEFIK_HOST}"
+echo "   User: ${TFA_USER}"
+echo "   Pass: ${TFA_PASS_CLEAR}"
 echo ""
-echo "💾 Backup-Container Secrets:"
-echo "  StorageBox SFTP User: ${SB_USER}"
-echo "  StorageBox Pfad (auf SB): ${SB_PATH}"
-echo "  Rclone Crypt-Passwort: ${SB_CRYPT_PASS} (BITTE SICHERN!)"
-echo "---"
+echo "☁️ Nextcloud:"
+echo "   URL:  https://${NEXTCLOUD_HOST}"
+echo "   Hinweis: Admin-Account wird bei der Erstinstallation im Web-Installer angelegt."
+echo ""
+echo "📄 Paperless-ngx:"
+echo "   URL:      https://${PAPERLESS_HOST}"
+echo "   Benutzer: ${PAPERLESS_ADMIN}"
+echo "   Passwort: ${PAPERLESS_ADMIN_PASS}"
+echo ""
+echo "⚙️ n8n:"
+echo "   URL:      https://${N8N_HOST}"
+echo "   Benutzer: ${N8N_USER}"
+echo "   Passwort: ${N8N_PASS}"
+echo "   Encryption Key (sehr wichtig!): ${N8N_KEY}"
+echo ""
+echo "🔑 SFTP Scanner (Upload nach Paperless):"
+echo "   Host:   [DEINE SERVER-IP oder DOMAIN]"
+echo "   Port:   2222"
+echo "   User:   ${SFTP_USER}"
+echo "   Pass:   ${SFTP_PASS}"
+echo ""
+echo "💾 Hetzner Storage Box:"
+echo "   Host:   ${SB_HOST}"
+echo "   User:   ${SB_USER}"
+echo "   Pass:   ${SB_PASS}"
+echo "   Pfad:   ${SB_PATH}"
+echo "   Rclone Crypt-Passwort: ${SB_CRYPT_PASS}"
+echo ""
+if [ -n "${SYNOLOGY_HOST}" ]; then
+  echo "📀 Synology Backup (falls aktiviert):"
+  echo "   Host:   ${SYNOLOGY_HOST}"
+  echo "   User:   ${SYNOLOGY_USER}"
+  echo "   Pass:   ${SYNOLOGY_PASSWORD}"
+  echo "   Pfad:   ${SYNOLOGY_PATH}"
+  echo "   Port:   ${SYNOLOGY_PORT}"
+  echo ""
+fi
+echo "==================================================================="
 echo ""
 say "Nächste Schritte:"
-echo "* Führen Sie ${BASE_DIR}/maintenance.sh aus, um Backups zu verwalten."
-echo "* Überprüfen Sie die Logs bei Problemen: docker compose logs"
+echo "* Prüfe die Dienste im Browser (Traefik, Nextcloud, Paperless, n8n)."
+echo "* Nutze ${BASE_DIR}/maintenance.sh für Backups & Restores."
+echo "* Sichere dir diese Zugangsdaten außerhalb des Servers (Passwort-Manager o. Ä.)."
