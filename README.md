@@ -1,7 +1,3 @@
-🌌 UNIVERSAL SELFHOSTED STACK
-Nextcloud • Paperless-ngx • Traefik v3 • n8n • OnlyOffice • Zero-Knowledge Backups • SFTP-Scanner
-<div align="center"> <img src="https://img.shields.io/badge/Status-Stable-00e5ff?style=for-the-badge&logo=hackthebox&logoColor=00e5ff" /> <img src="https://img.shields.io/badge/Docker-Ready-0aff9d?style=for-the-badge&logo=docker&logoColor=0aff9d" /> <img src="https://img.shields.io/badge/Traefik-v3-00e5ff?style=for-the-badge&logo=traefikproxy&logoColor=00e5ff" /> <img src="https://img.shields.io/badge/N8N-Automation-0aff9d?style=for-the-badge&logo=n8n&logoColor=0aff9d" /> <img src="https://img.shields.io/badge/Backups-Encrypted-00e5ff?style=for-the-badge&logo=protonvpn&logoColor=00e5ff" /> </div>
-
 # 🌌 Universal Selfhosted Stack
 ### Nextcloud • Paperless-ngx • Traefik v3 • n8n • OnlyOffice • Zero-Knowledge Backups • SFTP-Scanner
 
