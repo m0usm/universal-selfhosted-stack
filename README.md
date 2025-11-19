@@ -12,7 +12,7 @@
 
 
 <div align="center">
-  <img src="img/banner.png" alt="Banner" />
+  <img src="img/banner.png" alt="Banner" width="60%" />
 </div>
 
 <br>
