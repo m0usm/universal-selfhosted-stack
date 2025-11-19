@@ -1,150 +1,178 @@
-# universial-stack-init
+# 🚀 universial-stack-init
 
-> Production-ready Bash installer that deploys a complete Traefik + Nextcloud + Paperless + n8n stack with healthchecks, SFTP, backups & secure defaults.
-
-`universial-stack-init` ist ein einmal auszuführendes Bash-Script, das dir einen kompletten Self-Host-Stack aufsetzt:
-
-- **Traefik v3** (Reverse Proxy, Let’s Encrypt, BasicAuth, Rate-Limits)
-- **Nextcloud 29** + **MariaDB 11**
-- **Paperless-ngx** + optional **PostgreSQL 16**
-- **OnlyOffice Document Server**
-- **n8n** (Automation / Workflows)
-- **SFTP-Scanner** für Paperless-Uploads (z. B. Multifunktionsdrucker)
-- **Backup-Container** mit
-  - `rclone` → Hetzner Storage Box (SFTP Port 23, *rclone crypt*)
-  - optionalem Synology-Remote (SFTP Port 22)
-  - täglichen Backups + Deltas + Voll-Snapshots
-- **maintenance.sh** für Backups, Restore & Start/Stop
-
-Alles wird in einem Rutsch erledigt: Verzeichnisstruktur, `.env`, `docker-compose.yml`, Backup-Container, Cronjob und ein kleines Wartungs-Tool.
+**Production-ready Bash installer that deploys a complete Traefik + Nextcloud + Paperless + n8n stack with healthchecks, SFTP, backups & secure defaults.**
 
 ---
 
-## Features
+## 🧩 Overview
+`universial-stack-init` ist ein All‑in‑One Bootstrap‑Skript, das einen vollständigen Self‑Hosted‑Stack automatisiert bereitstellt:
 
-- 🧩 **Ein Script, kompletter Stack**  
-  Keine 10 Copy/Paste-Snippets – du beantwortest ein paar Fragen und bekommst ein konsistentes Setup.
+- Traefik v3 (TLS, DNS, Dashboard, Middlewares)
+- Nextcloud 29 + MariaDB 11
+- Paperless‑ngx (OCR + Tika + Gotenberg)
+- n8n Automation Server
+- OnlyOffice Document Server
+- SFTP‑Scanner (Uploads direkt in Paperless)
+- Verschlüsseltes Backup-System (Hetzner + optional Synology)
+- Healthchecks, Retry‑Loop & sichere Defaults
 
-- 🔐 **Sichere Defaults**
-  - Starke, zufällig generierte Passwörter
-  - Traefik-Dashboard hinter BasicAuth (`.htpasswd` mit bcrypt)
-  - Let’s Encrypt mit eigener Mailadresse
-  - `acme.json` mit `chmod 600`
-  - Rate-Limit für das Traefik-Dashboard
-
-- 📦 **Backups mit Strategie**
-  - Täglicher Cronjob um 02:00 Uhr
-  - `latest/` – aktueller vollständiger Stand
-  - `archive/YYYY-MM-DD/` – tägliche Deltas
-  - `snapshots/YYYY-MM-DD/` – Vollsnapshots (täglich oder wöchentlich)
-  - optionaler Synology-Mirror
-
-- 🗃️ **Paperless-ngx ready**
-  - OCR via Apache Tika
-  - PDF-Konvertierung via Gotenberg
-  - SQLite *oder* Postgres – frei wählbar im Setup
-
-- 🔁 **Wartungsscript**
-  - Manuelles Backup
-  - Snapshots auflisten
-  - Restore auf beliebiges Datum
-  - Start/Stop aller Container
+Alles in **einem einzigen Bash‑Script**.
 
 ---
 
-## Voraussetzungen
+## ⚡ Features
 
-- Linux-Server (getestet: Debian/Ubuntu)
-- Root oder `sudo`-Zugriff
-- Öffentlich erreichbare Ports **80** und **443**
-- Eine Domain mit passenden DNS-Einträgen für:
-  - `traefik.<deine-domain>`
-  - `cloud.<deine-domain>`
-  - `paperless.<deine-domain>`
-  - `n8n.<deine-domain>`
-  - `office.<deine-domain>`
-- Hetzner Storage Box (SFTP, Port 23) für Backups  
-  _(optional)_ Synology-NAS mit SFTP für zusätzliche Kopie
+### 🔐 Traefik v3 + Security
+- Vollautomatisches HTTPS (Let’s Encrypt)
+- acme.json mit `600` Rechten
+- Bcrypt‑geschütztes Dashboard
+- Rate‑Limit Middleware
 
-> Falls Docker noch nicht installiert ist:  
-> Für Debian/Ubuntu kümmert sich das Script automatisch darum (`get.docker.com`).
+### ☁️ Nextcloud
+- Nextcloud 29
+- MariaDB 11
+- Optimierte PHP‑Settings
+- Fully Traefik‑integrated
+
+### 📄 Paperless‑ngx
+- OCR via Apache Tika
+- PDF‑Konvertierung via Gotenberg
+- Redis Queue
+- Optional PostgreSQL statt SQLite
+
+### 🤖 n8n Automation
+- Encryption Key wird generiert
+- Editor- & Webhook‑URLs automatisch korrekt gesetzt
+- Persistente Daten
+
+### 🔌 SFTP‑Scanner
+- Scanner‑Benutzer wird automatisch angelegt
+- Direkt in den Paperless‑Consume‑Ordner
+- Upload / Done / Fail‑Ordner
+
+### 📦 Backup System
+- Rclone → Hetzner Storage Box (SFTP Port 23)
+- Voll verschlüsselt (rclone crypt)
+- `latest/`, `archive/`, `snapshots/`
+- Optional: Synology Mirror
+- Automatische Cron‑Jobs
 
 ---
 
-## Quickstart
+## 🛠 Installation
 
-### 1. Script herunterladen
-
+### 1. Skript herunterladen
 ```bash
-curl -fsSL https://raw.githubusercontent.com/m0usm/universial-stack-init/main/universial-stack-init.sh -o universial-stack-init.sh
-chmod +x universial-stack-init.sh
-2. Script ausführen
-bash
-Code kopieren
-sudo ./universial-stack-init.sh
-Du wirst u. a. nach Folgendem gefragt:
+curl -fsSL https://example.com/universial-stack-init.sh -o init.sh
+chmod +x init.sh
+```
 
-Basis-Verzeichnis (z. B. /opt/stack)
+### 2. Ausführen
+```bash
+sudo ./init.sh
+```
 
-Let’s-Encrypt-Mailadresse
+### 3. Dienste nach erfolgreicher Installation
+| Dienst       | URL-Beispiel                     |
+|--------------|----------------------------------|
+| Traefik      | https://traefik.example.com      |
+| Nextcloud    | https://cloud.example.com        |
+| Paperless    | https://paperless.example.com    |
+| n8n          | https://n8n.example.com          |
+| OnlyOffice   | https://office.example.com       |
 
-Basisdomain (z. B. example.com)
 
-Subdomains für Traefik, Nextcloud, Paperless, n8n, OnlyOffice
+---
 
-Paperless-Datenbank: PostgreSQL (empfohlen) oder SQLite
+## 🎬 Demo (Ablaufübersicht)
 
-Hetzner Storage Box Zugang (Host, User, Passwort, Pfad)
+Der Ablauf der Installation sieht typischerweise so aus:
 
-Optional: Synology-Backup (Host, User, Passwort, Pfad, Port)
+1. Eingaben erfassen (Domain, Mail, Optionen)
+2. Struktur anlegen (`/opt/stack/...`)
+3. `.env` generieren
+4. `docker-compose.yml` erzeugen
+5. Images ziehen + Build
+6. Stack starten
+7. Healthchecks & Retry‑Loop
+8. Ausgabe aller Endpunkte
+9. Backup‑Plan aktivieren
 
-Aufbewahrungsdauer für Archive & Snapshots
+*(GIF/Video kannst du hier später einfügen)*
 
-Dienste & URLs (Default-Schema)
-Wenn du als Basisdomain example.com angibst, sehen die Standards so aus:
+---
 
-Traefik Dashboard: https://traefik.example.com
+## 🗂 Verzeichnisstruktur (Server)
+```
+/opt/stack
+├─ traefik/
+├─ nextcloud/
+├─ paperless/
+├─ n8n/
+├─ onlyoffice/
+├─ backup/
+└─ .env
+```
 
-Nextcloud: https://cloud.example.com
+---
 
-Paperless: https://paperless.example.com
+## 🔄 Wartung
 
-n8n: https://n8n.example.com
+### Wartungsskript
+```bash
+./maintenance.sh
+```
 
-OnlyOffice: https://office.example.com
+### Beispiele
+```bash
+./maintenance.sh backup       # Sofort-Backup
+./maintenance.sh restore      # Restore latest
+./maintenance.sh restore 2025-11-16  # Snapshot
+```
 
-Die tatsächlichen Subdomains kannst du beim Setup anpassen.
+---
 
-Backup-Konzept
-Backups laufen in einem eigenen Container (backup) auf Basis Alpine + rclone + mysql/psql.
+## 🧩 Backup-Konzept
 
-Storage Box (verschlüsselt)
-text
-Code kopieren
+### Storage Box Struktur
+```
 StorageBox:
-├─ latest/                 # aktueller kompletter Stand von /data
-├─ archive/                # tägliche Deltas
+├─ latest/
+├─ archive/
 │   ├─ 2025-11-10/
 │   ├─ 2025-11-11/
-│   └─ …
-└─ snapshots/              # Vollsnapshots
+│   └─ ...
+└─ snapshots/
     ├─ 2025-11-16/
     ├─ 2025-11-23/
-    └─ …
-Wartung (maintenance.sh)
-bash
-Code kopieren
-./maintenance.sh          # Hilfe / Übersicht
-./maintenance.sh backup   # Sofort-Backup
-./maintenance.sh snapshots
-./maintenance.sh restore 2025-11-16
-Sicherheit
-Traefik-Dashboard nur über BasicAuth
+    └─ ...
+```
 
-Passwörter werden zur Laufzeit zufällig generiert und in .env geschrieben
+---
 
-Let’s-Encrypt-Zertifikate werden in data/traefik/acme.json mit chmod 600 gehalten
+## ❓ FAQ
 
-SFTP-Scanner läuft auf Port 2222
+### **Kostet das etwas?**
+Nein. Das Script ist für deinen eigenen Server gedacht.
 
-Backups auf der Storage Box sind durch rclone crypt verschlüsselt
+### **Welche OS werden unterstützt?**
+- Debian
+- Ubuntu
+
+### **Kann ich OnlyOffice direkt nutzen?**
+Ja → einfach in Nextcloud unter *Admin → OnlyOffice* die URL eintragen.
+
+### **Paperless ohne Postgres?**
+Ja, Standard ist SQLite.
+
+---
+
+## 🧾 License
+MIT License © 2025 m0usm
+
+---
+
+## 👤 Maintainer
+**m0usm** – Selfhoster, DevOps & Automation
+
+Wenn dir das Projekt gefällt: ⭐ Star nicht vergessen!
