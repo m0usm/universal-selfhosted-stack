@@ -10,12 +10,44 @@ Keine manuelle Konfiguration. Keine YAML-Hölle. Keine Passworteingaben.
 
 🔥 Features
 🧩 Core Services
-Service	Beschreibung
-Traefik v3	TLS, Routing, Dashboard (bcrypt geschützt)
-Nextcloud 31	Private Cloud, Files, Kalender
-Paperless-ngx	Dokumentenmanagement + OCR
-OnlyOffice	Online Office Suite
-n8n	Automationen & Workflows
-Redis	Cache für NC + Paperless
-Tika / Gotenberg	OCR + PDF Rendering
-SFTP-Scanner	Scanner-Upload → Paperless „consume“
+
+| Service              | Beschreibung                               |
+| -------------------- | ------------------------------------------ |
+| **Traefik v3**       | TLS, Routing, Dashboard (bcrypt geschützt) |
+| **Nextcloud 31**     | Private Cloud, Files, Kalender             |
+| **Paperless-ngx**    | Dokumentenmanagement + OCR                 |
+| **OnlyOffice**       | Online Office Suite                        |
+| **n8n**              | Automationen & Workflows                   |
+| **Redis**            | Cache für NC + Paperless                   |
+| **Tika / Gotenberg** | OCR + PDF Rendering                        |
+| **SFTP-Scanner**     | Scanner-Upload → Paperless „consume“       |
+
+🔷 Neon-DevOps Architecture (Diagramm)
+
+(Dark Mode • Cyan • Homelab Style)
+
+                     ┌───────────────────────────┐
+                     │      🔐 Traefik v3        │
+                     │  TLS • Routing • ACME     │
+                     └─────────────┬─────────────┘
+                                   │
+         ┌─────────────────────────┼─────────────────────────┐
+         │                         │                         │
+┌────────▼────────┐     ┌──────────▼──────────┐    ┌────────▼────────┐
+│   Nextcloud     │     │     Paperless       │    │      n8n         │
+│  + MariaDB      │     │+ Redis + Tika/Gotenb│    │ Workflows / API  │
+└────────┬────────┘     └──────────┬──────────┘    └────────┬────────┘
+         │                          │                       │
+         │                    ┌─────▼─────────┐             │
+         │                    │  SFTP Upload  │             │
+         │                    └───────────────┘             │
+         │                          │                       │
+         └──────────────────────────┴────────────────────────┘
+
+                🔒 Backups (Zero-Knowledge, rclone crypt)
+              latest • archive/Δ • snapshots/YYYY-MM-DD
+
+⚡ Installation (1 Command)       
+wget https://raw.githubusercontent.com/m0usm/UNIVERSAL-SELFHOSTED-STACK/main/setup.sh -O setup.sh
+chmod +x setup.sh
+sudo ./setup.sh
