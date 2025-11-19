@@ -255,3 +255,8 @@ chmod +x setup.sh
 sudo ./setup.sh
 
 
+<pre><code>
+wget https://raw.githubusercontent.com/m0usm/universal-selfhosted-stack/main/setup.sh -O setup.sh
+chmod +x setup.sh
+sudo ./setup.sh
+</code></pre>
