@@ -21,7 +21,7 @@
 Ein vollständig automatisierter Selfhosted-Stack für Homelabs und Server.
 Reverse Proxy, SSL, Cloud, Dokumentenmanagement, Office, Workflows, OCR, PDF Rendering, Backups und Zero-Knowledge Verschlüsselung – alles über ein einziges Setup-Skript.
 
-#DEUTSCH
+# DEUTSCH
 
 # Universal Selfhosted Stack
 Nextcloud • Paperless-ngx • Traefik v3 • n8n • OnlyOffice • Encrypted Backups • SFTP Scanner
@@ -141,7 +141,7 @@ Wiederherstellen:
 m0usm
 
 
-#ENGLISH
+# ENGLISH
 
 # Universal Selfhosted Stack
 Nextcloud • Paperless-ngx • Traefik v3 • n8n • OnlyOffice • Encrypted Backups • SFTP Scanner
