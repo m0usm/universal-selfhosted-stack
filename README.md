@@ -47,9 +47,11 @@ Alle Passwörter, Konfigurationen und Zertifikate werden automatisch erzeugt.
 
 Befehle zum Starten der Installation:
 
+<pre><code>
 wget https://raw.githubusercontent.com/m0usm/universal-selfhosted-stack/main/setup.sh -O setup.sh
 chmod +x setup.sh
 sudo ./setup.sh
+</code></pre>
 
 Das Setup fragt:
 
@@ -103,6 +105,7 @@ Wiederherstellen:
 ---
 ## Projektstruktur
 
+<pre><code>
 /opt/stack/
 ├── setup.sh
 ├── docker-compose.yml
@@ -118,6 +121,7 @@ Wiederherstellen:
     ├── Dockerfile
     ├── entrypoint.sh
     └── .dockerignore
+  </code></pre>
 
 ---
 ## maintenance.sh Befehle
@@ -165,9 +169,11 @@ All credentials, certificates and environment variables are generated automatica
 
 Install using:
 
+<pre><code>
 wget https://raw.githubusercontent.com/m0usm/universal-selfhosted-stack/main/setup.sh -O setup.sh
 chmod +x setup.sh
 sudo ./setup.sh
+</code></pre>
 
 The installer will ask for:
 
@@ -249,14 +255,3 @@ Restore example:
 ## License
 
 MIT License
-
-wget https://raw.githubusercontent.com/m0usm/universal-selfhosted-stack/main/setup.sh -O setup.sh
-chmod +x setup.sh
-sudo ./setup.sh
-
-
-<pre><code>
-wget https://raw.githubusercontent.com/m0usm/universal-selfhosted-stack/main/setup.sh -O setup.sh
-chmod +x setup.sh
-sudo ./setup.sh
-</code></pre>
