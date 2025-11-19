@@ -27,9 +27,6 @@ OCR, PDF rendering, SFTP ingestion and encrypted backups – all deployed using 
 
 # DEUTSCH
 
-# Universal Selfhosted Stack
-Nextcloud • Paperless-ngx • Traefik v3 • n8n • OnlyOffice • Encrypted Backups • SFTP Scanner
-
 ## Überblick
 
 Dieser Stack installiert automatisch:
