@@ -150,10 +150,6 @@ m0usm
 # Universal Selfhosted Stack
 Nextcloud • Paperless-ngx • Traefik v3 • n8n • OnlyOffice • Encrypted Backups • SFTP Scanner
 
-A fully automated self-hosting environment for servers and homelabs.
-Reverse proxy, HTTPS, cloud storage, document management, workflow automation,
-OCR, PDF rendering, SFTP ingestion and encrypted backups – all deployed using a single setup script.
-
 ------------------------------------------------------------
 ## Overview
 
