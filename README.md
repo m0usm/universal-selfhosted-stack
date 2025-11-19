@@ -1,174 +1,199 @@
-Traefik • Nextcloud 31 • Paperless-ngx • n8n • OnlyOffice • Redis • SFTP-Scanner • Automated Backups
+🖥️ Preview
 
-Dieses Projekt ist ein vollständiger, automatischer Setup-Wizard für einen modernen Self-Hosted-Stack.
-Das Bash-Script richtet komplett selbstständig ein:
+🔧 Vollautomatisches Setup
+🔐 Zero-Knowledge Backups (rclone crypt)
+📦 Delta-Backups + Vollsnapshots
+☁️ Traefik Reverse Proxy + SSL + Dashboard
+📄 Nextcloud + Paperless-NGX + OnlyOffice
+⚙️ n8n Automations
+📨 SFTP-Scanner für Paperless (Scanner-Upload)
+🛡️ Best Practices: acme.json 600, .env 600, bcrypt BasicAuth
 
-🚀 Features
-🖥️ Core Services
+📑 Inhalt
 
-Traefik v3 – Reverse Proxy + automatische Let’s Encrypt Zertifikate
+⭐ Features
 
-Nextcloud 31 – Datei-Cloud, Kalender, Kontakte
+⚡ Installation (1 Command)
 
-OnlyOffice Document Server – Online-Dokumentbearbeitung für Nextcloud
+🔧 Konfiguration
 
-Paperless-ngx – Dokumentenmanagement (OCR, Tags, Automatisierung)
+🔐 Login & Zugangsdaten
 
-n8n – Automationsplattform
+📁 Projektstruktur
 
-Redis – Caching (für Nextcloud & Paperless)
+🔒 Sicherheitshinweise
 
-MariaDB – Nextcloud-Datenbank
+📦 Backup System (Delta + Snapshots)
 
-PostgreSQL (optional) – Paperless-Datenbank
+🧰 Wartung (maintenance.sh)
 
-SFTP-Scanner – Upload-Eingang für Paperless
+💬 FAQ
 
-💾 High-End Backup System
+👤 Author
 
-Backup-Container mit:
+⭐ Features
+🧰 Komplett-Automatischer Server-Stack
 
-✔ Täglicher automatischer Backup-Job
-✔ Dump von:
+Installiert Docker / Compose (falls nicht vorhanden)
 
-Nextcloud-DB (MariaDB)
+Erstellt Ordnerstruktur vollständig automatisch
 
-Paperless-DB (PostgreSQL)
+Generiert alle Passwörter inklusive DB, Admin, Rclone Crypt, SFTP
 
-✔ Vollverschlüsselte Backups via rclone crypt
-✔ Hetzner StorageBox als Ziel
-✔ Synology optional als zweites Ziel
-✔ Backup-Stufen:
+Erstellt .env, docker-compose.yml, maintenance.sh und Backup-Container
 
-/latest – kompletter Stand
+🔐 Sicherheit & Encryption
 
-/archive/YYYY-MM-DD – Deltas
+Traefik Dashboard gesichert via bcrypt BasicAuth
 
-/snapshots/YYYY-MM-DD – Vollsnapshots (täglich oder wöchentlich)
+StorageBox-Backups vollständig verschlüsselt (rclone crypt)
 
-✔ Restore System:
+.env wird automatisch auf 600 gesetzt
 
-Vollsnapshot wiederherstellen
+acme.json automatisch geschützt
 
-Latest + Delta wiederherstellen
+📦 Apps
+Dienst	Beschreibung
+Traefik v3	Reverse Proxy + SSL + Dashboard
+Nextcloud 31	Private Cloud
+Paperless-ngx	Dokumentenmanagement
+OnlyOffice	Online-Office Suite
+n8n	Workflow Automation
+Redis	Cache für Nextcloud / Paperless
+Tika + Gotenberg	OCR + PDF Verarbeitung
+SFTP-Scanner	Scanner-Upload direkt ins Paperless „consume“
+💾 Backup System
 
-Datenbank-Wiederherstellung inklusive
+Delta-Backups → /archive/YYYY-MM-DD
 
-🔧 Voraussetzungen
+Vollsnapshots verschlüsselt → /snapshots/YYYY-MM-DD
 
-Ubuntu / Debian Server
+latest → vollständiger aktueller Stand
 
-Domain + DNS A-Records
+Optional: Upload zu Synology (SFTP)
 
-Root-Zugriff
+⚡ Installation (1 Command)
+wget https://raw.githubusercontent.com/m0usm/UNIVERSAL-SELFHOSTED-STACK/main/setup.sh -O setup.sh
+chmod +x setup.sh
+sudo ./setup.sh
 
-(Optional) Hetzner StorageBox
+🧩 Konfiguration
 
-(Optional) Synology SFTP-Zugang
+Das Script fragt beim Start:
 
-🛠️ Installation
-1. Script herunterladen
-wget https://raw.githubusercontent.com/m0usm/<DEIN-REPO>/main/stack-setup.sh
-chmod +x stack-setup.sh
-
-2. Setup starten
-sudo ./stack-setup.sh
-
-
-Das Script fragt automatisch nach:
-
-Basisverzeichnis
+Basis-Verzeichnis (/opt/stack)
 
 Domains
 
 Let’s Encrypt E-Mail
 
+PostgreSQL für Paperless (ja/nein)
+
 StorageBox Zugang
 
-Synology Zugang (optional)
-
-PostgreSQL ja/nein
+Optional Synology Backup
 
 Aufbewahrungszeiten
 
-Snapshot-Typ (täglich / wöchentlich)
+Dashboard BasicAuth
 
-📦 Wartung
+Alles wird automatisch übernommen.
 
-Nach dem Setup erzeugt das Script das Tool:
+🔐 Login & Zugangsdaten
 
-maintenance.sh
+Der Installer zeigt am Ende ALLE generierten Zugangsdaten farblich sortiert an:
 
-Verfügbare Befehle
-Befehl	Funktion
-./maintenance.sh backup	Sofort-Backup
-./maintenance.sh snapshots	Liste aller Archive + Snapshots
-./maintenance.sh restore YYYY-MM-DD	Restore auf ein Datum
-./maintenance.sh stop	Stoppt Stack
-./maintenance.sh start	Startet Stack
-🔐 Logins & Credentials
+Dienst	Zugang
+Traefik Dashboard	Benutzer + Passwort
+Nextcloud Admin	Web-Setup beim ersten Login
+Paperless Admin	Benutzer + Passwort
+n8n BasicAuth	Benutzer + Passwort
+SFTP-Scanner	Benutzer + Passwort
+StorageBox	User + Pfad
+Rclone Crypt Password	Secret Key
+DB Passwörter	MariaDB + Postgres (falls aktiviert)
 
-Das Script zeigt am Ende automatisch alle wichtigen Logins an:
+Alle Passwörter stehen zusätzlich in:
 
-Traefik Dashboard
+/opt/stack/.env
 
-Nextcloud Admin
 
-Paperless Admin
-
-n8n BasicAuth
-
-SFTP-Scanner Benutzer + Passwort
-
-Rclone Crypt Passwort
-
-DB-Passwörter
-
-Alle Passwörter werden beim Setup generiert und in .env gespeichert.
+⚠️ Dateirechte 600!
 
 📁 Projektstruktur
 /opt/stack/
-│
 ├── docker-compose.yml
 ├── .env
+├── setup.sh
 ├── maintenance.sh
-│
 ├── data/
+│   ├── traefik/
 │   ├── nextcloud/
 │   ├── paperless/
-│   ├── traefik/
 │   ├── n8n/
-│   └── sftp/
-│
-└── backup/
-    ├── Dockerfile
-    ├── entrypoint.sh
-    └── .dockerignore
+│   ├── sftp/
+├── backup/
+│   ├── Dockerfile
+│   ├── entrypoint.sh
+│   └── .dockerignore
 
 🔒 Sicherheitshinweise
 
-Die StorageBox-Backups sind verschlüsselt (rclone crypt).
+Backups sind vollständig verschlüsselt via rclone crypt
 
-.env unbedingt schützen (chmod 600).
+.env → unbedingt mit 600 schützen
 
-Zugriff auf Traefik Dashboard ist geschützt durch BasicAuth (bcrypt).
+Traefik Dashboard ist geschützt
 
-Nutzung hinter Firewall oder Fail2Ban empfohlen.
+Nutzung hinter Firewall / Fail2Ban empfohlen
 
-🧩 Warum dieses Projekt?
+Keine Passwörter im Klartext außer in .env
 
-Kein manuelles Basteln von 20 Config-Dateien
+📦 Backup & Restore
+🔁 Sofort-Backup:
+./maintenance.sh backup
 
-Vollautomatische Einrichtung in 1 Command
+🧊 Verfügbare Snapshots anzeigen:
+./maintenance.sh snapshots
 
-Failsafe Backups mit Delta + Snapshots
+🔄 Restore (Stop + Wiederherstellung + Start):
+./maintenance.sh restore YYYY-MM-DD
 
-Zero-Knowledge Backups durch rclone crypt
+🧰 maintenance.sh
 
-Ideal für Homeserver (Proxmox / Hetzner / Rootserver)
+Einfaches Wartungs-Werkzeug:
 
-🐭 Author
+./maintenance.sh
+
+
+Menü:
+
+Backup starten
+
+Snapshots anzeigen
+
+Restore (mit Datum)
+
+Stack stoppen
+
+Stack starten
+
+❓ FAQ
+Läuft es auf Proxmox / Hetzner / Rootserver?
+
+✔ Ja, auf allem mit Debian/Ubuntu.
+
+Werden Backups wirklich verschlüsselt?
+
+✔ 100% – rclone crypt (AES-256) + salted filenames.
+
+Kann ich Nextcloud updaten?
+
+✔ Ja, einfach Image-Version ändern.
+
+👤 Author
 
 m0usm
-Gaming + Dev + Self-Hosting Enthusiast
-GitHub: https://github.com/m0usm
+Github: https://github.com/m0usm
+
+Projektidee: „One Command – Full Selfhosted Stack“
