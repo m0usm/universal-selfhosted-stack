@@ -45,7 +45,7 @@ Dieser Stack installiert automatisch:
 
 Alle Passwörter, Konfigurationen und Zertifikate werden automatisch erzeugt.
 
-------------------------------------------------------------
+---
 ## Installation
 
 Befehle zum Starten der Installation:
@@ -64,7 +64,7 @@ Das Setup fragt:
 - Snapshot-Konfiguration
 - Traefik BasicAuth für Dashboard
 
-------------------------------------------------------------
+---
 ## Zugangsdaten
 
 Automatisch generiert:
@@ -82,7 +82,7 @@ Gespeichert in:
 
 /opt/stack/.env
 
-------------------------------------------------------------
+---
 ## Backup-System
 
 Automatisch erzeugt:
@@ -103,7 +103,7 @@ Wiederherstellen:
 
 ./maintenance.sh restore YYYY-MM-DD
 
-------------------------------------------------------------
+---
 ## Projektstruktur
 
 /opt/stack/
@@ -122,7 +122,7 @@ Wiederherstellen:
     ├── entrypoint.sh
     └── .dockerignore
 
-------------------------------------------------------------
+---
 ## maintenance.sh Befehle
 
 ./maintenance.sh backup  
@@ -131,7 +131,7 @@ Wiederherstellen:
 ./maintenance.sh start  
 ./maintenance.sh stop  
 
-------------------------------------------------------------
+---
 ## Sicherheit
 
 - Bcrypt BasicAuth für Traefik
@@ -139,7 +139,7 @@ Wiederherstellen:
 - Sicherer Zugriff (chmod 600) auf .env und acme.json
 - Keine Container ohne Reverse Proxy erreichbar
 
-------------------------------------------------------------
+---
 ## Autor
 
 m0usm
@@ -147,10 +147,7 @@ m0usm
 
 # ENGLISH
 
-# Universal Selfhosted Stack
-Nextcloud • Paperless-ngx • Traefik v3 • n8n • OnlyOffice • Encrypted Backups • SFTP Scanner
-
-------------------------------------------------------------
+---
 ## Overview
 
 This stack automatically deploys:
@@ -166,7 +163,7 @@ This stack automatically deploys:
 
 All credentials, certificates and environment variables are generated automatically.
 
-------------------------------------------------------------
+---
 ## Installation
 
 Install using:
@@ -185,7 +182,7 @@ The installer will ask for:
 - Snapshot schedule
 - BasicAuth for Traefik dashboard
 
-------------------------------------------------------------
+---
 ## Credentials
 
 Generated automatically:
@@ -203,7 +200,7 @@ Stored in:
 
 /opt/stack/.env
 
-------------------------------------------------------------
+---
 ## Backup System
 
 Automatic backup structure:
@@ -224,7 +221,7 @@ Restore example:
 
 ./maintenance.sh restore 2025-01-15
 
-------------------------------------------------------------
+---
 ## Project Structure
 
 /opt/stack/
@@ -243,7 +240,7 @@ Restore example:
     ├── entrypoint.sh
     └── .dockerignore
 
-------------------------------------------------------------
+---
 ## Security
 
 - Traefik dashboard protected via bcrypt BasicAuth
@@ -251,7 +248,7 @@ Restore example:
 - Sensitive files restricted with chmod 600
 - No exposed services without reverse proxy
 
-------------------------------------------------------------
+---
 ## License
 
 MIT License
