@@ -139,7 +139,6 @@ Kommando-Werkzeug:
 ## 👤 Author
 **m0usm** – Homelab • DevOps • Selfhosting
 
-
 # 🚀 Universal Selfhosted Stack  
 ### Nextcloud • Paperless-ngx • Traefik v3 • n8n • OnlyOffice • Zero-Knowledge Backups • SFTP Scanner
 
@@ -177,105 +176,4 @@ Komplett installiert mit **einem einzigen Befehl**. Keine manuelle Konfiguration
 wget https://raw.githubusercontent.com/m0usm/universal-selfhosted-stack/main/setup.sh -O setup.sh
 chmod +x setup.sh
 sudo ./setup.sh
-Das Setup führt dich durch alle Fragen (Domains, Backups, StorageBox, Synology, usw.).
 
-🔑 Wichtige Zugangsdaten (werden automatisch generiert)
-Nach dem Setup werden dir alle Logins & Passwörter angezeigt:
-
-Dienst	Zugang
-Traefik Dashboard	Benutzer + Passwort (BasicAuth)
-Nextcloud Admin	Benutzer: admin / Passwort generiert
-Paperless-ngx Admin	Benutzer: admin / Passwort generiert
-n8n BasicAuth	Benutzer + Passwort generiert
-SFTP-Scanner	Benutzer: scanner / Passwort generiert
-DB-Passwörter	MySQL / PostgreSQL / Redis – automatisch generiert
-rclone crypt Key	Zero-Knowledge Verschlüsselung
-
-Alles wird in deiner .env gespeichert (600-Berechtigungen).
-
-🗂 Projektstruktur
-bash
-Code kopieren
-/opt/stack/
-│── docker-compose.yml
-│── .env
-│── maintenance.sh
-│
-├── data/
-│   ├── traefik/
-│   ├── nextcloud/
-│   ├── paperless/
-│   ├── n8n/
-│   └── sftp/
-│
-├── backup/
-│   ├── Dockerfile
-│   ├── entrypoint.sh
-│   └── .dockerignore
-🔐 Sicherheitshinweise
-Alle Backups sind zero-knowledge verschlüsselt (rclone crypt).
-
-.env unbedingt schützen:
-
-bash
-Code kopieren
-chmod 600 .env
-Traefik Dashboard ist per bcrypt BasicAuth gesichert.
-
-Nutzung hinter Firewall oder Fail2Ban empfohlen.
-
-💾 Backup & Restore
-Der Backup-Container erstellt automatisch:
-
-✔ /latest – aktueller vollständiger Stand
-✔ /archive/YYYY-MM-DD – Delta-Backups
-✔ /snapshots/YYYY-MM-DD – komplette Vollkopien
-Alle Backups sind verschlüsselt.
-
-➤ Manuelles Backup
-bash
-Code kopieren
-./maintenance.sh backup
-➤ Liste der Snapshots
-bash
-Code kopieren
-./maintenance.sh snapshots
-➤ Wiederherstellung (Beispiel)
-bash
-Code kopieren
-./maintenance.sh restore 2025-01-15
-🧰 Wartungsskript (maintenance.sh)
-Enthält vereinfachte Befehle:
-
-backup – Sofort-Backup
-
-snapshots – Liste anzeigen
-
-restore YYYY-MM-DD – Wiederherstellen
-
-stop – Stack stoppen
-
-start – Stack starten
-
-🎯 Warum dieser Stack?
-One-Command Installation
-
-Keine manuelle Konfiguration
-
-Optimiertes Docker-Setup
-
-Zero-Knowledge Backups
-
-Snapshots + Delta-Backups
-
-Homelab-Ready (Proxmox, Hetzner, Rootserver, Unraid)
-
-Extraharte Sicherheit durch minimale Oberfläche und gute Defaults
-
-📜 Lizenz
-MIT License — frei verwendbar, anpassbar, kommerziell nutzbar.
-
-✨ Autor
-m0usm
-GitHub: https://github.com/m0usm
-Project: Universal Selfhosted Stack
