@@ -227,6 +227,7 @@ Restore example:
 ---
 ## Project Structure
 
+<pre><code>
 /opt/stack/
 ├── setup.sh
 ├── docker-compose.yml
@@ -242,6 +243,7 @@ Restore example:
     ├── Dockerfile
     ├── entrypoint.sh
     └── .dockerignore
+  </code></pre>
 
 ---
 ## Security
