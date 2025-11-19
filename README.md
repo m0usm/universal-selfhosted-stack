@@ -1,178 +1,174 @@
-# 🚀 universial-stack-init
+Traefik • Nextcloud 31 • Paperless-ngx • n8n • OnlyOffice • Redis • SFTP-Scanner • Automated Backups
 
-**Production-ready Bash installer that deploys a complete Traefik + Nextcloud + Paperless + n8n stack with healthchecks, SFTP, backups & secure defaults.**
+Dieses Projekt ist ein vollständiger, automatischer Setup-Wizard für einen modernen Self-Hosted-Stack.
+Das Bash-Script richtet komplett selbstständig ein:
 
----
+🚀 Features
+🖥️ Core Services
 
-## 🧩 Overview
-`universial-stack-init` ist ein All‑in‑One Bootstrap‑Skript, das einen vollständigen Self‑Hosted‑Stack automatisiert bereitstellt:
+Traefik v3 – Reverse Proxy + automatische Let’s Encrypt Zertifikate
 
-- Traefik v3 (TLS, DNS, Dashboard, Middlewares)
-- Nextcloud 29 + MariaDB 11
-- Paperless‑ngx (OCR + Tika + Gotenberg)
-- n8n Automation Server
-- OnlyOffice Document Server
-- SFTP‑Scanner (Uploads direkt in Paperless)
-- Verschlüsseltes Backup-System (Hetzner + optional Synology)
-- Healthchecks, Retry‑Loop & sichere Defaults
+Nextcloud 31 – Datei-Cloud, Kalender, Kontakte
 
-Alles in **einem einzigen Bash‑Script**.
+OnlyOffice Document Server – Online-Dokumentbearbeitung für Nextcloud
 
----
+Paperless-ngx – Dokumentenmanagement (OCR, Tags, Automatisierung)
 
-## ⚡ Features
+n8n – Automationsplattform
 
-### 🔐 Traefik v3 + Security
-- Vollautomatisches HTTPS (Let’s Encrypt)
-- acme.json mit `600` Rechten
-- Bcrypt‑geschütztes Dashboard
-- Rate‑Limit Middleware
+Redis – Caching (für Nextcloud & Paperless)
 
-### ☁️ Nextcloud
-- Nextcloud 29
-- MariaDB 11
-- Optimierte PHP‑Settings
-- Fully Traefik‑integrated
+MariaDB – Nextcloud-Datenbank
 
-### 📄 Paperless‑ngx
-- OCR via Apache Tika
-- PDF‑Konvertierung via Gotenberg
-- Redis Queue
-- Optional PostgreSQL statt SQLite
+PostgreSQL (optional) – Paperless-Datenbank
 
-### 🤖 n8n Automation
-- Encryption Key wird generiert
-- Editor- & Webhook‑URLs automatisch korrekt gesetzt
-- Persistente Daten
+SFTP-Scanner – Upload-Eingang für Paperless
 
-### 🔌 SFTP‑Scanner
-- Scanner‑Benutzer wird automatisch angelegt
-- Direkt in den Paperless‑Consume‑Ordner
-- Upload / Done / Fail‑Ordner
+💾 High-End Backup System
 
-### 📦 Backup System
-- Rclone → Hetzner Storage Box (SFTP Port 23)
-- Voll verschlüsselt (rclone crypt)
-- `latest/`, `archive/`, `snapshots/`
-- Optional: Synology Mirror
-- Automatische Cron‑Jobs
+Backup-Container mit:
 
----
+✔ Täglicher automatischer Backup-Job
+✔ Dump von:
 
-## 🛠 Installation
+Nextcloud-DB (MariaDB)
 
-### 1. Skript herunterladen
-```bash
-curl -fsSL https://example.com/universial-stack-init.sh -o init.sh
-chmod +x init.sh
-```
+Paperless-DB (PostgreSQL)
 
-### 2. Ausführen
-```bash
-sudo ./init.sh
-```
+✔ Vollverschlüsselte Backups via rclone crypt
+✔ Hetzner StorageBox als Ziel
+✔ Synology optional als zweites Ziel
+✔ Backup-Stufen:
 
-### 3. Dienste nach erfolgreicher Installation
-| Dienst       | URL-Beispiel                     |
-|--------------|----------------------------------|
-| Traefik      | https://traefik.example.com      |
-| Nextcloud    | https://cloud.example.com        |
-| Paperless    | https://paperless.example.com    |
-| n8n          | https://n8n.example.com          |
-| OnlyOffice   | https://office.example.com       |
+/latest – kompletter Stand
+
+/archive/YYYY-MM-DD – Deltas
+
+/snapshots/YYYY-MM-DD – Vollsnapshots (täglich oder wöchentlich)
+
+✔ Restore System:
+
+Vollsnapshot wiederherstellen
+
+Latest + Delta wiederherstellen
+
+Datenbank-Wiederherstellung inklusive
+
+🔧 Voraussetzungen
+
+Ubuntu / Debian Server
+
+Domain + DNS A-Records
+
+Root-Zugriff
+
+(Optional) Hetzner StorageBox
+
+(Optional) Synology SFTP-Zugang
+
+🛠️ Installation
+1. Script herunterladen
+wget https://raw.githubusercontent.com/m0usm/<DEIN-REPO>/main/stack-setup.sh
+chmod +x stack-setup.sh
+
+2. Setup starten
+sudo ./stack-setup.sh
 
 
----
+Das Script fragt automatisch nach:
 
-## 🎬 Demo (Ablaufübersicht)
+Basisverzeichnis
 
-Der Ablauf der Installation sieht typischerweise so aus:
+Domains
 
-1. Eingaben erfassen (Domain, Mail, Optionen)
-2. Struktur anlegen (`/opt/stack/...`)
-3. `.env` generieren
-4. `docker-compose.yml` erzeugen
-5. Images ziehen + Build
-6. Stack starten
-7. Healthchecks & Retry‑Loop
-8. Ausgabe aller Endpunkte
-9. Backup‑Plan aktivieren
+Let’s Encrypt E-Mail
 
-*(GIF/Video kannst du hier später einfügen)*
+StorageBox Zugang
 
----
+Synology Zugang (optional)
 
-## 🗂 Verzeichnisstruktur (Server)
-```
-/opt/stack
-├─ traefik/
-├─ nextcloud/
-├─ paperless/
-├─ n8n/
-├─ onlyoffice/
-├─ backup/
-└─ .env
-```
+PostgreSQL ja/nein
 
----
+Aufbewahrungszeiten
 
-## 🔄 Wartung
+Snapshot-Typ (täglich / wöchentlich)
 
-### Wartungsskript
-```bash
-./maintenance.sh
-```
+📦 Wartung
 
-### Beispiele
-```bash
-./maintenance.sh backup       # Sofort-Backup
-./maintenance.sh restore      # Restore latest
-./maintenance.sh restore 2025-11-16  # Snapshot
-```
+Nach dem Setup erzeugt das Script das Tool:
 
----
+maintenance.sh
 
-## 🧩 Backup-Konzept
+Verfügbare Befehle
+Befehl	Funktion
+./maintenance.sh backup	Sofort-Backup
+./maintenance.sh snapshots	Liste aller Archive + Snapshots
+./maintenance.sh restore YYYY-MM-DD	Restore auf ein Datum
+./maintenance.sh stop	Stoppt Stack
+./maintenance.sh start	Startet Stack
+🔐 Logins & Credentials
 
-### Storage Box Struktur
-```
-StorageBox:
-├─ latest/
-├─ archive/
-│   ├─ 2025-11-10/
-│   ├─ 2025-11-11/
-│   └─ ...
-└─ snapshots/
-    ├─ 2025-11-16/
-    ├─ 2025-11-23/
-    └─ ...
-```
+Das Script zeigt am Ende automatisch alle wichtigen Logins an:
 
----
+Traefik Dashboard
 
-## ❓ FAQ
+Nextcloud Admin
 
-### **Kostet das etwas?**
-Nein. Das Script ist für deinen eigenen Server gedacht.
+Paperless Admin
 
-### **Welche OS werden unterstützt?**
-- Debian
-- Ubuntu
+n8n BasicAuth
 
-### **Kann ich OnlyOffice direkt nutzen?**
-Ja → einfach in Nextcloud unter *Admin → OnlyOffice* die URL eintragen.
+SFTP-Scanner Benutzer + Passwort
 
-### **Paperless ohne Postgres?**
-Ja, Standard ist SQLite.
+Rclone Crypt Passwort
 
----
+DB-Passwörter
 
-## 🧾 License
-MIT License © 2025 m0usm
+Alle Passwörter werden beim Setup generiert und in .env gespeichert.
 
----
+📁 Projektstruktur
+/opt/stack/
+│
+├── docker-compose.yml
+├── .env
+├── maintenance.sh
+│
+├── data/
+│   ├── nextcloud/
+│   ├── paperless/
+│   ├── traefik/
+│   ├── n8n/
+│   └── sftp/
+│
+└── backup/
+    ├── Dockerfile
+    ├── entrypoint.sh
+    └── .dockerignore
 
-## 👤 Maintainer
-**m0usm** – Selfhoster, DevOps & Automation
+🔒 Sicherheitshinweise
 
-Wenn dir das Projekt gefällt: ⭐ Star nicht vergessen!
+Die StorageBox-Backups sind verschlüsselt (rclone crypt).
+
+.env unbedingt schützen (chmod 600).
+
+Zugriff auf Traefik Dashboard ist geschützt durch BasicAuth (bcrypt).
+
+Nutzung hinter Firewall oder Fail2Ban empfohlen.
+
+🧩 Warum dieses Projekt?
+
+Kein manuelles Basteln von 20 Config-Dateien
+
+Vollautomatische Einrichtung in 1 Command
+
+Failsafe Backups mit Delta + Snapshots
+
+Zero-Knowledge Backups durch rclone crypt
+
+Ideal für Homeserver (Proxmox / Hetzner / Rootserver)
+
+🐭 Author
+
+m0usm
+Gaming + Dev + Self-Hosting Enthusiast
+GitHub: https://github.com/m0usm
