@@ -173,6 +173,64 @@ Komplett installiert mit **einem einzigen Befehl**. Keine manuelle Konfiguration
 ## ⚡ Installation (3 Befehle)
 
 ```bash
+
+
+![Universal Selfhosted Stack Banner](images/universal-selfhosted-stack-banner.png)
+
+# Universal Selfhosted Stack
+
+Vollautomatischer Docker-Stack für Nextcloud, Paperless-ngx, Traefik v3, n8n, OnlyOffice, verschlüsselte Backups und SFTP-Scanner – alles mit einem einzigen Setup-Skript.
+
+Fully automated Docker stack for Nextcloud, Paperless-ngx, Traefik v3, n8n, OnlyOffice, encrypted backups and an SFTP scanner – all from a single setup script.
+
+---
+
+# Deutsch
+
+## Funktionen
+
+- Ein-Kommando-Setup für kompletten Selfhosted-Stack
+- Traefik v3 als Reverse Proxy mit HTTPS und Dashboard
+- Nextcloud 31 als zentrale Cloud-Plattform
+- Paperless-ngx mit Redis, Tika und Gotenberg für OCR & PDF-Verarbeitung
+- OnlyOffice DocumentServer für Online-Office
+- n8n für Automatisierungen und Workflows
+- SFTP-Scanner für direkten Dokumenten-Upload nach Paperless
+- Vollautomatische Backups (latest + Delta-Archive + Snapshots)
+- Zero-Knowledge Backups via rclone crypt (Hetzner Storage Box)
+- Optional: zweites Backup-Ziel auf Synology per SFTP
+
+## Services
+
+- **Traefik v3** – Routing, HTTPS, Let’s Encrypt, Dashboard (BasicAuth)
+- **Nextcloud 31** – Files, Kalender, Kontakte
+- **Paperless-ngx** – Dokumentenmanagement mit OCR, Tika und Gotenberg
+- **OnlyOffice** – Webbasierte Office-Suite
+- **n8n** – Workflow-Automation im Browser
+- **SFTP-Scanner** – Upload-Verzeichnis direkt an Paperless-Consume
+- **Backup-Container** – Dumps + rclone-Sync + Snapshots (StorageBox + optional Synology)
+
+## Voraussetzungen
+
+- Linux-Server (Debian/Ubuntu oder kompatibel)
+- root oder sudo-Zugriff
+- Docker + Docker Compose (wird bei Bedarf automatisch installiert)
+- Eine Domain (z. B. `example.com`) mit DNS-Einträgen für:
+  - `traefik.example.com`
+  - `cloud.example.com`
+  - `paperless.example.com`
+  - `n8n.example.com`
+  - `office.example.com`
+- Hetzner Storage Box (für verschlüsselte Backups, SFTP/SSH aktiviert)
+- Optional: Synology mit SFTP/SSH für zweites Backup-Ziel
+
+## Installation
+
+```bash
+wget https://raw.githubusercontent.com/m0usm/universal-selfhosted-stack/main/setup.sh -O setup.sh
+chmod +x setup.sh
+sudo ./setup.sh
+
 wget https://raw.githubusercontent.com/m0usm/universal-selfhosted-stack/main/setup.sh -O setup.sh
 chmod +x setup.sh
 sudo ./setup.sh
