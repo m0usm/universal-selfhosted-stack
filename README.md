@@ -15,11 +15,12 @@
 
 ## Support the Project
 
-If you want to support the project, you can use this referral link (no extra cost):
+If you'd like to support this project, feel free to use the referral link below:
 
-👉 [Hetzner Cloud – Referral Link](https://hetzner.cloud/?ref=6BtzZwMqWY0Q)
+[![Hetzner Referral](https://img.shields.io/badge/Hetzner-Referral-e60000?style=for-the-badge&logo=hetzner&logoColor=white)](https://hetzner.cloud/?ref=6BtzZwMqWY0Q)
 
-*This is a referral link: you receive cloud credits and I receive a small bonus.*
+*Referral link — you receive cloud credits, and I receive a small bonus.*
+
 
 
 
