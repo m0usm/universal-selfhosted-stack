@@ -231,6 +231,14 @@ Restore example:
     ├── entrypoint.sh
     └── .dockerignore
   </code></pre>
+---
+## maintenance.sh Befehle
+
+./maintenance.sh backup  
+./maintenance.sh snapshots  
+./maintenance.sh restore YYYY-MM-DD  
+./maintenance.sh start  
+./maintenance.sh stop  
 
 ---
 ## Security
