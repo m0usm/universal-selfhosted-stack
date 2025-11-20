@@ -6,6 +6,9 @@
 </div>
 
 ---
+<div align="center">
+  <img src="img/banner.png" alt="Banner" width="55%" />
+</div>
 
 ## 💖 Support This Project
 
