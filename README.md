@@ -19,7 +19,7 @@
 
 <p>If you'd like to support the development of this stack, you can use one of the options below:</p>
 
-<div style="display:flex; justify-content:center; gap:12px; margin-top:10px; flex-wrap:wrap;">
+<table><tr><td align="center">
 
 <a href="https://buymeacoffee.com/m0usm">
   <img src="https://img.shields.io/badge/Buy%20Me%20a%20Coffee-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=black" />
@@ -33,18 +33,11 @@
   <img src="https://img.shields.io/badge/Hetzner-Referral-e60000?style=for-the-badge&logo=hetzner&logoColor=white" />
 </a>
 
-</div>
+</td></tr></table>
 
 <p style="margin-top:12px;">Thank you for your support! ❤️</p>
 
 </div>
-
-
-</div>
-
-</div>
-
-
 
 # Digital Company Cloud Stack
 
