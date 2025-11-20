@@ -15,8 +15,6 @@
 
 ---
 
-## 💖 Support This Project
-
 <div align="center">
 
 <p>If you'd like to support the development of this stack, you can use one of the options below:</p>
