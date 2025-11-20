@@ -7,17 +7,17 @@
 
 ---
 
-<div align="center">
-  <img src="img/banner.png" alt="Banner" width="55%" />
-</div>
-
-<br>
+## 💖 Support This Project
 
 <div align="center">
 
 <p>If you'd like to support the development of this stack, you can use one of the options below:</p>
 
-<div style="display:flex; justify-content:center; gap:12px; margin-top:10px;">
+<div style="display:flex; justify-content:center; gap:12px; margin-top:10px; flex-wrap:wrap;">
+
+<a href="https://buymeacoffee.com/m0usm">
+  <img src="https://img.shields.io/badge/Buy%20Me%20a%20Coffee-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=black" />
+</a>
 
 <a href="https://paypal.me/m0usm">
   <img src="https://img.shields.io/badge/Donate-PayPal-0070ba?style=for-the-badge&logo=paypal&logoColor=white" />
@@ -30,6 +30,9 @@
 </div>
 
 <p style="margin-top:12px;">Thank you for your support! ❤️</p>
+
+</div>
+
 
 </div>
 
