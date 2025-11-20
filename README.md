@@ -21,6 +21,8 @@ A fully automated self-hosting environment for servers and homelabs.
 Reverse proxy, HTTPS, cloud storage, document management, workflow automation,
 OCR, PDF rendering, SFTP ingestion and encrypted backups – all deployed using a single setup script.
 
+---
+
 # DEUTSCH
 
 ## Überblick
@@ -38,7 +40,6 @@ Dieser Stack installiert automatisch:
 
 Alle Passwörter, Konfigurationen und Zertifikate werden automatisch erzeugt.
 
----
 ## Installation
 
 Befehle zum Starten der Installation:
@@ -59,7 +60,6 @@ Das Setup fragt:
 - Snapshot-Konfiguration
 - Traefik BasicAuth für Dashboard
 
----
 ## Zugangsdaten
 
 Automatisch generiert:
@@ -77,7 +77,6 @@ Gespeichert in:
 
 /opt/stack/.env
 
----
 ## Backup-System
 
 Automatisch erzeugt:
@@ -93,7 +92,6 @@ Snapshots anzeigen:
 Wiederherstellen:
 ./maintenance.sh restore YYYY-MM-DD
 
----
 ## Projektstruktur
 
 <pre><code>
@@ -114,7 +112,6 @@ Wiederherstellen:
     └── .dockerignore
   </code></pre>
 
----
 ## maintenance.sh Befehle
 
 ./maintenance.sh backup  
@@ -123,7 +120,6 @@ Wiederherstellen:
 ./maintenance.sh start  
 ./maintenance.sh stop  
 
----
 ## Sicherheit
 
 - Bcrypt BasicAuth für Traefik
@@ -135,7 +131,6 @@ Wiederherstellen:
 
 # ENGLISH
 
----
 ## Overview
 
 This stack automatically deploys:
@@ -151,7 +146,6 @@ This stack automatically deploys:
 
 All credentials, certificates and environment variables are generated automatically.
 
----
 ## Installation
 
 Install using:
@@ -172,7 +166,6 @@ The installer will ask for:
 - Snapshot schedule
 - BasicAuth for Traefik dashboard
 
----
 ## Credentials
 
 Generated automatically:
@@ -190,7 +183,6 @@ Stored in:
 
 /opt/stack/.env
 
----
 ## Backup System
 
 Automatic backup structure:
@@ -207,7 +199,6 @@ List snapshots:
 Restore example:
 ./maintenance.sh restore 2025-01-15
 
----
 ## Project Structure
 
 <pre><code>
@@ -227,8 +218,8 @@ Restore example:
     ├── entrypoint.sh
     └── .dockerignore
   </code></pre>
----
-## maintenance.sh Befehle
+  
+## maintenance.sh commands
 
 ./maintenance.sh backup  
 ./maintenance.sh snapshots  
@@ -236,7 +227,6 @@ Restore example:
 ./maintenance.sh start  
 ./maintenance.sh stop  
 
----
 ## Security
 
 - Traefik dashboard protected via bcrypt BasicAuth
@@ -244,6 +234,5 @@ Restore example:
 - Sensitive files restricted with chmod 600
 - No exposed services without reverse proxy
 
----
 ## License
 MIT License
