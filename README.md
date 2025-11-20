@@ -13,6 +13,16 @@
 
 <br>
 
+## Support the Project
+
+If you want to support the project, you can use this referral link (no extra cost):
+
+👉 [Hetzner Cloud – Referral Link](https://hetzner.cloud/?ref=6BtzZwMqWY0Q)
+
+*This is a referral link: you receive cloud credits and I receive a small bonus.*
+
+
+
 # Digital Company Cloud Stack
 
 Ein vollständig automatisierter Selfhosted-Stack für Homelabs und Server.
