@@ -13,13 +13,27 @@
 
 <br>
 
-## Support the Project
+## 💖 Support This Project
 
-If you'd like to support this project, feel free to use the referral link below:
+<div align="center">
 
-[![Hetzner Referral](https://img.shields.io/badge/Hetzner-Referral-e60000?style=for-the-badge&logo=hetzner&logoColor=white)](https://hetzner.cloud/?ref=6BtzZwMqWY0Q)
+  <p>If you'd like to support the development of this stack, you can use one of the options below:</p>
 
-*Referral link — you receive cloud credits, and I receive a small bonus.*
+  <div style="display: flex; justify-content: center; gap: 12px; margin-top: 10px;">
+
+    <a href="https://paypal.me/m0usm">
+      <img src="https://img.shields.io/badge/Donate-PayPal-0070ba?style=for-the-badge&logo=paypal&logoColor=white" />
+    </a>
+
+    <a href="https://hetzner.cloud/?ref=6BtzZwMqWY0Q">
+      <img src="https://img.shields.io/badge/Hetzner-Referral-e60000?style=for-the-badge&logo=hetzner&logoColor=white" />
+    </a>
+
+  </div>
+
+  <p style="margin-top: 12px;">Thank you for your support! ❤️</p>
+
+</div>
 
 
 # Digital Company Cloud Stack
