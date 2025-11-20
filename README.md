@@ -91,15 +91,10 @@ Automatisch erzeugt:
 - snapshots/YYYY-MM-DD/ = Vollsnapshots
 
 Manuelles Backup:
-
 ./maintenance.sh backup
-
 Snapshots anzeigen:
-
 ./maintenance.sh snapshots
-
 Wiederherstellen:
-
 ./maintenance.sh restore YYYY-MM-DD
 
 ---
@@ -211,13 +206,9 @@ Automatic backup structure:
 Manual backup:
 
 ./maintenance.sh backup
-
 List snapshots:
-
 ./maintenance.sh snapshots
-
 Restore example:
-
 ./maintenance.sh restore 2025-01-15
 
 ---
