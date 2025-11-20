@@ -19,25 +19,32 @@
 
 <p>If you'd like to support the development of this stack, you can use one of the options below:</p>
 
-<span style="margin:0 4px; display:inline-block;">
+<span>
   <a href="https://buymeacoffee.com/m0usm" style="text-decoration:none;">
     <img src="https://img.shields.io/badge/Buy%20Me%20a%20Coffee-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=black" />
   </a>
 </span>
 
-<span style="margin:0 4px; display:inline-block;">
+<span style="display:inline-block;width:10px;"></span>
+
+<span>
   <a href="https://paypal.me/m0usm" style="text-decoration:none;">
     <img src="https://img.shields.io/badge/Donate-PayPal-0070ba?style=for-the-badge&logo=paypal&logoColor=white" />
   </a>
 </span>
 
-<span style="margin:0 4px; display:inline-block;">
+<span style="display:inline-block;width:10px;"></span>
+
+<span>
   <a href="https://hetzner.cloud/?ref=6BtzZwMqWY0Q" style="text-decoration:none;">
     <img src="https://img.shields.io/badge/Hetzner-Referral-e60000?style=for-the-badge&logo=hetzner&logoColor=white" />
   </a>
 </span>
 
 <p style="margin-top:6px;">Thank you for your support! ❤️</p>
+
+</div>
+
 
 </div>
 
