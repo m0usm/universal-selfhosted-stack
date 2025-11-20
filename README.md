@@ -5,6 +5,7 @@
   <img src="https://img.shields.io/badge/Backups-Encrypted-0aff9d?style=for-the-badge&logo=protonvpn&logoColor=0aff9d" />
 </div>
 
+---
 
 <div align="center">
   <img src="img/banner.png" alt="Banner" width="55%" />
