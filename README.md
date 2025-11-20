@@ -17,17 +17,12 @@
 
 If you'd like to support the development of this stack, you can use the links below (no extra cost):
 
-### ❤️ PayPal
 [![PayPal](https://img.shields.io/badge/Donate-PayPal-0070ba?style=for-the-badge&logo=paypal&logoColor=white)](https://paypal.me/m0usm)
 
-### ☁️ Hetzner Referral
+Hetzner Referral
 [![Hetzner Referral](https://img.shields.io/badge/Hetzner-Referral-e60000?style=for-the-badge&logo=hetzner&logoColor=white)](https://hetzner.cloud/?ref=6BtzZwMqWY0Q)
 
 *These links help support the project — thank you! ❤️*
-
-
-
-
 
 # Digital Company Cloud Stack
 
