@@ -13,7 +13,7 @@
 
 <br>
 
-## 💖 Support This Project
+---
 
 <div align="center">
 
