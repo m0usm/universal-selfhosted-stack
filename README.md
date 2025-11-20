@@ -128,7 +128,7 @@ Wiederherstellen:
 - Sicherer Zugriff (chmod 600) auf .env und acme.json
 - Keine Container ohne Reverse Proxy erreichbar
 
-## Lizenz
+# Lizenz
 MIT License – siehe LICENSE Datei für Details.  
 
 ---
@@ -238,5 +238,5 @@ Restore example:
 - Sensitive files restricted with chmod 600
 - No exposed services without reverse proxy
 
-## License 
+# License 
 MIT License – see the LICENSE file for details.
