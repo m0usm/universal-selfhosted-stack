@@ -10,8 +10,6 @@
   <img src="img/banner.png" alt="Banner" width="55%" />
 </div>
 
-## 💖 Support This Project
-
 <div align="center">
 
 <p style="margin-bottom:6px;">
