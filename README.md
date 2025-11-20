@@ -13,6 +13,7 @@
 
 <br>
 
+# Digital Company Cloud Stack
 
 Ein vollständig automatisierter Selfhosted-Stack für Homelabs und Server.
 Reverse Proxy, SSL, Cloud, Dokumentenmanagement, Office, Workflows, OCR, PDF Rendering, Backups und Zero-Knowledge Verschlüsselung – alles über ein einziges Setup-Skript.
