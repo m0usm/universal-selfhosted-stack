@@ -129,7 +129,7 @@ Wiederherstellen:
 - Keine Container ohne Reverse Proxy erreichbar
 
 ## Lizenz
-MIT License – siehe LICENSE Datei für Details.  
+MIT-Lizenz  
 
 ---
 
@@ -238,7 +238,5 @@ Restore example:
 - Sensitive files restricted with chmod 600
 - No exposed services without reverse proxy
 
-## License 
-MIT License – see the LICENSE file for details.
-
----
+## License
+MIT License
