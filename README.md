@@ -141,10 +141,6 @@ Wiederherstellen:
 - Keine Container ohne Reverse Proxy erreichbar
 
 ---
-## Autor
-
-m0usm
-
 
 # ENGLISH
 
@@ -255,5 +251,4 @@ Restore example:
 
 ---
 ## License
-
 MIT License
