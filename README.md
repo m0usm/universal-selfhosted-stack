@@ -17,33 +17,34 @@
 
 <div align="center">
 
-<p style="margin-bottom:6px;">
-If you'd like to support the development of this stack, you can use one of the options below:
-</p>
+<p>If you'd like to support the development of this stack, you can use one of the options below:</p>
 
 <table style="border:0; border-collapse:collapse;">
-  <tr>
-    <td style="border:0; padding:0 4px;">
-      <a href="https://buymeacoffee.com/m0usm">
-        <img src="https://img.shields.io/badge/Buy%20Me%20a%20Coffee-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=black" />
-      </a>
-    </td>
+<tr>
+<td style="border:0; padding:0 6px;">
+<a href="https://buymeacoffee.com/m0usm">
+  <img src="https://img.shields.io/badge/Buy%20Me%20a%20Coffee-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=black" />
+</a>
+</td>
 
-    <td style="border:0; padding:0 4px;">
-      <a href="https://paypal.me/m0usm">
-        <img src="https://img.shields.io/badge/Donate-PayPal-0070ba?style=for-the-badge&logo=paypal&logoColor=white" />
-      </a>
-    </td>
+<td style="border:0; padding:0 6px;">
+<a href="https://paypal.me/m0usm">
+  <img src="https://img.shields.io/badge/Donate-PayPal-0070ba?style=for-the-badge&logo=paypal&logoColor=white" />
+</a>
+</td>
 
-    <td style="border:0; padding:0 4px;">
-      <a href="https://hetzner.cloud/?ref=6BtzZwMqWY0Q">
-        <img src="https://img.shields.io/badge/Hetzner-Referral-e60000?style=for-the-badge&logo=hetzner&logoColor=white" />
-      </a>
-    </td>
-  </tr>
+<td style="border:0; padding:0 6px;">
+<a href="https://hetzner.cloud/?ref=6BtzZwMqWY0Q">
+  <img src="https://img.shields.io/badge/Hetzner-Referral-e60000?style=for-the-badge&logo=hetzner&logoColor=white" />
+</a>
+</td>
+</tr>
 </table>
 
-<p style="margin-top:6px;">Thank you for your support! ❤️</p>
+<p>Thank you for your support! ❤️</p>
+
+</div>
+
 
 </div>
 
