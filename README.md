@@ -31,7 +31,7 @@
 </a>
 </p>
 
-<p style="margin-top:12px;">Thank you for your support! ❤️</p>
+<p style="margin-top:6px;">Thank you for your support! ❤️</p>
 
 </div>
 
