@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
+umask 077
 
 # --- Clean invisible Unicode spaces (e.g. NBSP) to prevent Bash errors ---
 # Wichtig: Diese Zeile muss am Anfang bleiben, falls unsichtbare Zeichen vorhanden sind.
@@ -646,10 +647,10 @@ export RCLONE_CONFIG_STORAGEBOX_SFTP_PORT=23
 export RCLONE_CONFIG_STORAGEBOX_SFTP_USE_SSH_AGENT=false
 export RCLONE_CONFIG_STORAGEBOX_SFTP_HOST_KEY_CHECKING=false
 
-# 2. Verschlüsselte Schicht ('StorageBox' ist der Name, der im Skript verwendet wird)
+# 2. Verschlüsselte Schicht ('STORAGEBOX' ist der Name, der im Skript verwendet wird)
 export RCLONE_CONFIG_STORAGEBOX_TYPE=crypt
 # Verwende die SFTP-Remote als Basis und den StorageBox-Pfad als Root-Verzeichnis
-export RCLONE_CONFIG_STORAGEBOX_REMOTE=storagebox_sftp:${STORAGEBOX_PATH}
+export RCLONE_CONFIG_STORAGEBOX_REMOTE=STORAGEBOX_SFTP:${STORAGEBOX_PATH}
 export RCLONE_CONFIG_STORAGEBOX_FILENAME_ENCRYPTION=standard
 export RCLONE_CONFIG_STORAGEBOX_PASSWORD="$(rclone obscure "${STORAGEBOX_CRYPT_PASS}")"
 export RCLONE_CONFIG_STORAGEBOX_PASSWORD2="$(rclone obscure "${STORAGEBOX_CRYPT_PASS}")"
@@ -708,19 +709,19 @@ run_backup() {
     unset PGPASSWORD
   fi
 
-  echo "Sync nach 'latest' + Archiv mit Tagesordner (StorageBox/CRYPT)…"
-  rclone sync /data "StorageBox:latest" \
-    --backup-dir="StorageBox:archive/$(date +%Y-%m-%d)" \
+  echo "Sync nach 'latest' + Archiv mit Tagesordner (STORAGEBOX/CRYPT)…"
+  rclone sync /data "STORAGEBOX:latest" \
+    --backup-dir="STORAGEBOX:archive/$(date +%Y-%m-%d)" \
     --fast-list \
     -v --log-file=/dev/stdout
 
   KEEP_DAYS="${KEEP_DAYS:-180}"
-  echo "Pruning (älter als ${KEEP_DAYS} Tage entfernen - StorageBox/archive)…"
-  rclone delete "StorageBox:archive" \
+  echo "Pruning (älter als ${KEEP_DAYS} Tage entfernen - STORAGEBOX/archive)…"
+  rclone delete "STORAGEBOX:archive" \
     --min-age ${KEEP_DAYS}d \
     --fast-list \
     -v --log-file=/dev/stdout || true
-  rclone rmdirs "StorageBox:archive" \
+  rclone rmdirs "STORAGEBOX:archive" \
     --fast-list \
     -v --log-file=/dev/stdout || true
 
@@ -737,17 +738,17 @@ run_backup() {
   fi
 
   if [ "$MAKE_SNAPSHOT" = "1" ]; then
-    echo "🧊 Erzeuge Vollsnapshot (StorageBox/CRYPT): snapshots/${SNAPSHOT_DATE}"
-    rclone sync /data "StorageBox:snapshots/${SNAPSHOT_DATE}" \
+    echo "🧊 Erzeuge Vollsnapshot (STORAGEBOX/CRYPT): snapshots/${SNAPSHOT_DATE}"
+    rclone sync /data "STORAGEBOX:snapshots/${SNAPSHOT_DATE}" \
       --fast-list \
       -v --log-file=/dev/stdout
 
-    echo "🧹 Pruning von Snapshots älter als ${SNAPSHOT_KEEP_DAYS} Tage (StorageBox/snapshots)…"
-    rclone delete "StorageBox:snapshots" \
+    echo "🧹 Pruning von Snapshots älter als ${SNAPSHOT_KEEP_DAYS} Tage (STORAGEBOX/snapshots)…"
+    rclone delete "STORAGEBOX:snapshots" \
       --min-age ${SNAPSHOT_KEEP_DAYS}d \
       --fast-list \
       -v --log-file=/dev/stdout || true
-    rclone rmdirs "StorageBox:snapshots" \
+    rclone rmdirs "STORAGEBOX:snapshots" \
       --fast-list \
       -v --log-file=/dev/stdout || true
   else
@@ -779,7 +780,7 @@ run_restore() {
   REQ_DATE="${1:-}"
 
   if [ -n "${REQ_DATE}" ]; then
-    SNAP_DIR="StorageBox:snapshots/${REQ_DATE}"
+    SNAP_DIR="STORAGEBOX:snapshots/${REQ_DATE}"
     if rclone lsd "${SNAP_DIR}" --fast-list >/dev/null 2>&1; then
       echo "🧊 Wiederherstellung aus Vollsnapshot ${REQ_DATE}..."
       rclone sync "${SNAP_DIR}" /data --fast-list -v --log-file=/dev/stdout
@@ -792,10 +793,10 @@ run_restore() {
   fi
 
   echo "🚚 Synchronisiere 'latest' → /data (vollständiger aktueller Stand)..."
-  rclone sync "StorageBox:latest" /data --fast-list -v --log-file=/dev/stdout
+  rclone sync "STORAGEBOX:latest" /data --fast-list -v --log-file=/dev/stdout
 
   if [ -n "${REQ_DATE}" ]; then
-    SNAPSHOT_PATH="StorageBox:archive/${REQ_DATE}"
+    SNAPSHOT_PATH="STORAGEBOX:archive/${REQ_DATE}"
     if rclone lsd "${SNAPSHOT_PATH}" --fast-list >/dev/null 2>&1; then
       echo "↩️  Wende Änderungen aus archive/${REQ_DATE} zusätzlich an (Dateien überschreiben)..."
       rclone copy "${SNAPSHOT_PATH}" /data --fast-list -v --log-file=/dev/stdout || true
@@ -815,10 +816,10 @@ elif [ "$1" = "backup" ]; then
 elif [ "$1" = "restore" ]; then
   run_restore "$2"
 elif [ "$1" = "snapshots" ]; then
-  echo "Liste Archiv-Ordner (StorageBox/CRYPT):"
-  rclone lsd "StorageBox:archive" --fast-list || true
-  echo "Liste Vollsnapshots (StorageBox/CRYPT):"
-  rclone lsd "StorageBox:snapshots" --fast-list || true
+  echo "Liste Archiv-Ordner (STORAGEBOX/CRYPT):"
+  rclone lsd "STORAGEBOX:archive" --fast-list || true
+  echo "Liste Vollsnapshots (STORAGEBOX/CRYPT):"
+  rclone lsd "STORAGEBOX:snapshots" --fast-list || true
   if setup_synology_remote; then
     echo "Liste Vollsnapshots (Synology):"
     rclone lsd "SYNOLOGY:${SYNOLOGY_PATH}/snapshots" --fast-list || true
@@ -875,6 +876,14 @@ else
   say "✅ Alle Container laufen stabil!"
 fi
 
+# -------- 11) Direkt ein Test-Backup starten ----------
+say "🧪 Starte einmaligen Test-Backup-Lauf (StorageBox/Synology)…"
+if docker compose run --rm backup backup; then
+  say "✅ Test-Backup erfolgreich. Prüfe StorageBox/Synology, ob Daten angekommen sind."
+else
+  err "❌ Test-Backup ist fehlgeschlagen. Bitte Logs des 'backup'-Containers prüfen (docker compose logs backup)."
+fi
+
 # -------- VISUELLE BACKUP/RESTORE-SKIZZE ----------
 say "📊 Backup & Restore Überblick"
 cat <<'EOF'
@@ -897,7 +906,7 @@ cat <<'EOF'
 
 EOF
 
-# -------- 11) Erstelle Wartungs-Skript (maintenance.sh) ----------
+# -------- 12) Erstelle Wartungs-Skript (maintenance.sh) ----------
 say "🔧 Erstelle Wartungs-Skript für einfache Handhabung…"
 
 MAINT_FILE="${BASE_DIR}/maintenance.sh"
@@ -1000,7 +1009,7 @@ esac
 EOF
 chmod +x "${MAINT_FILE}"
 
-# -------- 12) Abschließende Hinweise + ALLE wichtigen Logins ----------
+# -------- 13) Abschließende Hinweise + ALLE wichtigen Logins ----------
 say "🎉 Setup abgeschlossen!"
 echo ""
 echo "==================== WICHTIGE LOGINS & SECRETS ===================="
